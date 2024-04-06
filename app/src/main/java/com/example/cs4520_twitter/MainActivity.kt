@@ -24,8 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -48,8 +50,13 @@ class MainActivity : ComponentActivity() {
         val configuration = LocalConfiguration.current
         val maxHeight = configuration.screenHeightDp
         val maxWidth = configuration.screenWidthDp
-        val iconDim = 100
-        val exUsername = "babble_user"
+        val iconDim = maxWidth/3.5 // around a third
+        val dummyUsername = "babble_user"
+        val dummyFollowerCount = 0
+        val dummyFollowingCount = 0
+        val dummyLikesCount = 0
+        // val dummyPosts // TODO: Post component
+        val usernameSize = 20
 
         Box(modifier = with (Modifier) {
             fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -58,7 +65,7 @@ class MainActivity : ComponentActivity() {
             //Stack stuff on here
 
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                val (userBanner, userIcon, ) = createRefs()
+                val (userBanner, userIcon, username) = createRefs()
                 Box(modifier = Modifier // this is the white banner, has the screen's width
                     .fillMaxWidth()
                     .background(Color.White)
@@ -82,13 +89,25 @@ class MainActivity : ComponentActivity() {
                             // halfway icon height
                             top.linkTo(userBanner.top, margin = (-iconDim/2).dp)
                             // Place icon midway the screen's width
-                            absoluteLeft.linkTo(userBanner.absoluteLeft, margin = (maxWidth/2 - iconDim/2).dp)
+                            absoluteLeft.linkTo(userBanner.absoluteLeft,
+                                margin = (maxWidth/2 - iconDim/2).dp)
                         })
 
-                // Place more components of the user banner here
+                // ------- Place more components of the user banner here
+                // Username text
+                Text(dummyUsername,
+                    // textAlign = TextAlign.Center,
+                    fontSize = usernameSize.sp,
+                    modifier = Modifier
+                    .constrainAs(username) {
+                        top.linkTo(userIcon.bottom, margin = (5).dp)
+                        absoluteLeft.linkTo(userBanner.absoluteLeft,
+                            margin = (maxWidth/2 - (dummyUsername.length
+                                    * (usernameSize/2))/2).dp)
+                })
             }
 
-            // place more components of
+            // place more components of the overall profile screen
         }
     }
 
