@@ -49,6 +49,8 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data.Bab
 import com.example.cs4520_twitter.data.User
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
     private val blue :  androidx.compose.ui.graphics.Color = Color(0xFF9BAAF8) // 0xFF9BAAF8
@@ -229,7 +231,7 @@ class MainActivity : ComponentActivity() {
                     colors = ButtonDefaults.buttonColors(contentColor = blue, containerColor = Color.White)
                 ) {
                     Text(
-                        text = "My followers",
+                        text = "My Followers",
                         fontSize = 14.sp
                     )
                 }
@@ -252,14 +254,15 @@ class MainActivity : ComponentActivity() {
 
                 LazyColumn(modifier = Modifier
                     .fillMaxHeight()
-                    .width((maxWidth * 0.8).dp)
+                    .width((maxWidth * 0.93).dp)
                     .constrainAs(babColumn) {
                         top.linkTo(userBanner.bottom, margin = 10.dp)
+                        absoluteLeft.linkTo(parent.absoluteLeft, margin = ((maxWidth * 0.07)/2).dp)
                     }) {
                     items(
                         count = dummyBabList.size,
                         itemContent = { index ->
-                            //BabCard(dummyBabList[index])
+                            BabCard(dummyBabList[index])
                         }
                     )
                 }
@@ -286,6 +289,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun BabCard(bab : Bab) {
 //        Date
@@ -293,16 +297,63 @@ class MainActivity : ComponentActivity() {
 //        Text/Image
 //        Likes Amount
 //                Image (User)
+        val configuration = LocalConfiguration.current
+        val maxHeight = configuration.screenHeightDp
+        val maxWidth = configuration.screenWidthDp
         Card(modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().height((maxHeight/5).dp)
             .padding(horizontal = 8.dp, vertical = 8.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
             ),
             shape = RoundedCornerShape(corner = CornerSize(15.dp))) {
-            ConstraintLayout {
-                val (date, user, text, likes) = createRefs()
+            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight/5).dp)) {
+                val (date, username, content, likes, userIcon, heart) = createRefs()
+                GlideImage( // this is the icon image
+                    model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+                    loading = placeholder(ColorPainter(Color.White)),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(60.dp) // hardcoded icon dim.'s, etc.
+                        .shadow(
+                            elevation = 5.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = blue,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .constrainAs(userIcon) {
+                            // halfway icon height
+                            top.linkTo(parent.top, margin = (maxHeight/10 - 60).dp)
+                            // Place icon midway the screen's width
+                            absoluteLeft.linkTo(
+                                parent.absoluteLeft,
+                                margin = (10).dp
+                            )
+                        })
 
+                Text("@" + bab.authorUser.username, modifier = Modifier.constrainAs(username) {
+                    bottom.linkTo(userIcon.top)
+                    absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
+                })
+
+                Text(bab.content, modifier = Modifier.constrainAs(content) {
+                    top.linkTo(username.bottom)
+                    absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
+                })
+
+                Text("Likes: " + bab.likes.toString(), modifier = Modifier.constrainAs(likes) {
+                    top.linkTo(parent.bottom, margin = (-20).dp)
+                    absoluteLeft.linkTo(parent.absoluteLeft, margin = 20.dp)
+                })
+
+                // Date object may be deprecated
+                Text("Date: " + bab.date.toString(), modifier = Modifier.constrainAs(date) {
+                    top.linkTo(parent.bottom, margin = (-20).dp)
+                    absoluteLeft.linkTo(likes.absoluteLeft, margin = 50.dp)
+                })
             }
         }
     }
@@ -315,7 +366,7 @@ class MainActivity : ComponentActivity() {
                 .background(Color.White)
                 .height(200.dp)
         }) {
-
+            
         }
     }
 
