@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,14 +59,14 @@ val dummyBab = Bab(
     date = SimpleDateFormat("yyyy-MM-dd").parse("2024-04-07"),
     likes = 3,
     likedUserList = mutableListOf<String>())
- val dummyProfile = UserProfile(id = "user1",
-     user = dummyUser,
-     description = "Hello!",
-     followerCount = 0,
-     followerList = mutableListOf<User>(),
-     followingCount = 0,
-     followingList = mutableListOf<User>(),
-     babCount = 4)
+val dummyProfile = UserProfile(id = "user1",
+    user = dummyUser,
+    description = "Hello!",
+    followerCount = 0,
+    followerList = mutableListOf<User>(),
+    followingCount = 0,
+    followingList = mutableListOf<User>(),
+    babCount = 4)
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -112,6 +113,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
 
             GlideImage( // this is the user icon image
                 model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+                contentScale = ContentScale.Crop,
                 failure = placeholder(ColorPainter(Color.White)),
                 loading = placeholder(ColorPainter(Color.White)),
                 contentDescription = "",
@@ -293,61 +295,62 @@ fun BabCard(bab : Bab) {
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
-        ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight/5).dp)) {
-            val (date, username, content, likes, userIcon, heart) = createRefs()
-            GlideImage( // this is the icon image
-                model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
-                loading = placeholder(ColorPainter(Color.White)),
-                failure = placeholder(ColorPainter(Color.White)),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(60.dp) // hardcoded icon dim.'s, etc.
-                    .shadow(
-                        elevation = 5.dp,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = blue,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .constrainAs(userIcon) {
-                        // halfway icon height
-                        top.linkTo(parent.top, margin = (maxHeight/10 - 60).dp)
-                        // Place icon midway the screen's width
-                        absoluteLeft.linkTo(
-                            parent.absoluteLeft,
-                            margin = (10).dp
+            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight/5).dp)) {
+                val (date, username, content, likes, userIcon, heart) = createRefs()
+                GlideImage( // this is the icon image
+                    model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+                    contentScale = ContentScale.Crop,
+                    loading = placeholder(ColorPainter(Color.White)),
+                    failure = placeholder(ColorPainter(Color.White)),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(60.dp) // hardcoded icon dim.'s, etc.
+                        .shadow(
+                            elevation = 5.dp,
+                            shape = RoundedCornerShape(10.dp)
                         )
+                        .border(
+                            width = 1.dp,
+                            color = blue,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .constrainAs(userIcon) {
+                            // halfway icon height
+                            top.linkTo(parent.top, margin = (maxHeight/10 - 60).dp)
+                            // Place icon midway the screen's width
+                            absoluteLeft.linkTo(
+                                parent.absoluteLeft,
+                                margin = (10).dp
+                            )
+                        })
+
+                Text("@" + bab.authorUser.username,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.constrainAs(username) {
+                        bottom.linkTo(userIcon.top, margin = (-15).dp)
+                        absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
                     })
 
-            Text("@" + bab.authorUser.username,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.constrainAs(username) {
-                bottom.linkTo(userIcon.top, margin = (-15).dp)
-                absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
-            })
+                Text(bab.content, modifier = Modifier.constrainAs(content) {
+                    top.linkTo(username.bottom)
+                    absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
+                })
 
-            Text(bab.content, modifier = Modifier.constrainAs(content) {
-                top.linkTo(username.bottom)
-                absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
-            })
+                Text("Likes: " + bab.likes.toString(), color = blue,
+                    modifier = Modifier.constrainAs(likes) {
+                        top.linkTo(parent.bottom, margin = (-20).dp)
+                        absoluteLeft.linkTo(parent.absoluteLeft, margin = 20.dp)
+                    })
 
-            Text("Likes: " + bab.likes.toString(), color = blue,
-                modifier = Modifier.constrainAs(likes) {
-                top.linkTo(parent.bottom, margin = (-20).dp)
-                absoluteLeft.linkTo(parent.absoluteLeft, margin = 20.dp)
-            })
-
-            // Date object may be deprecated
-            Text("Date: " + bab.date.toString(), color = blue,
-                modifier = Modifier.constrainAs(date) {
-                top.linkTo(parent.bottom, margin = (-20).dp)
-                absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
-            })
+                // Date object may be deprecated
+                Text("Date: " + bab.date.toString(), color = blue,
+                    modifier = Modifier.constrainAs(date) {
+                        top.linkTo(parent.bottom, margin = (-20).dp)
+                        absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
+                    })
+            }
         }
-    }
     }
 }
 
