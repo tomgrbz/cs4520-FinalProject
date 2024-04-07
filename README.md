@@ -11,3 +11,5 @@ Some comments for reading ProfileScreen.kt
 - I think the Date type is deprecated (?). So, should we just use a string for the date field of a bab post?
 - Glide now displays images after adding internet permissions to the Manifest xml. I'm using the Glide Compose library since Glide's base library I believe needs an instance of an ImageView to load into which we don't use in composables.
 - We also need the global logged in user. Finally, get this screen to fetch data from the database instead of using dummy data, but we have the data types now thanks to Ally!
+
+![Alt text](profile_screen_photo.png)
