@@ -4,11 +4,11 @@ data class UserProfile(
     val id: String,
     val user: User,
     val description: String,
-    val followerCount: Number,
+    val followerCount: Int,
     val followerList: List<User>,
-    val followingCount: Number,
+    val followingCount: Int,
     val followingList: List<User>,
-    val babCount: Number,
+    val babCount: Int,
 )
 //
 //import androidx.room.Entity
