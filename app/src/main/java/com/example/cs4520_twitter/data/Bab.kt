@@ -7,7 +7,7 @@ data class Bab(
     val authorUser: User,
     val content: String,
     val date: Date,
-    val likes: Integer,
+    val likes: Int,
     val likedUserList: List<String>
 )
 //
