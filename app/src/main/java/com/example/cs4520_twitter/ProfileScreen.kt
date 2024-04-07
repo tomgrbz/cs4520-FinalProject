@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,8 +19,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,29 +65,28 @@ val dummyBab = Bab(
      followerList = mutableListOf<User>(),
      followingCount = 0,
      followingList = mutableListOf<User>(),
-     babCount = 3)
+     babCount = 4)
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun UserProfileScreen(profile : UserProfile = dummyProfile) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
-    val dummyFollowerCount = 0
-    val dummyFollowingCount = 0
-    val dummyBabCount = 3
-    val usernameSize = 20
+    val dummyFollowerCount = profile.followerCount
+    val dummyFollowingCount = profile.followingCount
+    val dummyBabCount = profile.babCount
+    val usernameSize = 20 // hardcoded dim.'s
     val dataTextSize = 14
     val iconDim = maxWidth/3.8 // around a quarter of the screen width
+    // I guess we would look up the bab database according to profile user id
     val dummyBabList = mutableListOf<Bab>(dummyBab, dummyBab, dummyBab, dummyBab)
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
     {
-        //Stack stuff on here
-
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (userBanner,
                 userIcon,
@@ -110,7 +110,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                     top.linkTo(parent.top, margin = (maxWidth * 0.35).dp)
                 })
 
-            GlideImage( // this is the icon image
+            GlideImage( // this is the user icon image
                 model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
                 failure = placeholder(ColorPainter(Color.White)),
                 loading = placeholder(ColorPainter(Color.White)),
@@ -136,7 +136,6 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                         )
                     })
 
-            // ------- Place more components of the user banner here
             // Username text
             Text(dummyUsername,
                 // textAlign = TextAlign.Center,
@@ -151,7 +150,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                         )
                     })
 
-            // Followers text
+            // Num. of Followers text
             Text(
                 "Followers: $dummyFollowerCount",
                 color = blue,
@@ -165,7 +164,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                         )
                     })
 
-            // Following text
+            // Num. of Following text
             Text(
                 "Following: $dummyFollowingCount",
                 color = blue,
@@ -179,7 +178,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                         )
                     })
 
-            // Number of Posts text
+            // Num. of Posts text
             Text(
                 "Babs: $dummyBabCount",
                 color = blue,
@@ -192,7 +191,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                             margin = 10.dp
                         )
                     })
-
+            // Button for editing profile
             Button(
                 onClick = {},
                 modifier = Modifier
@@ -214,7 +213,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                     fontSize = 14.sp
                 )
             }
-
+            // Button for viewing my followers
             Button(
                 onClick = {},
                 modifier = Modifier
@@ -236,12 +235,17 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                     fontSize = 14.sp
                 )
             }
-
+            // user desc.
             TextField(
                 value = userDescText,
                 onValueChange = { userDescText = it },
-                enabled = false,
+                // enabled = false, // uncomment this to disallow users from typing
                 singleLine = true,
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.White,
+                    focusedIndicatorColor =  Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent),
                 modifier = Modifier
                     .height(70.dp)
                     .width(350.dp)
@@ -253,9 +257,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                         )
                     })
 
-            //
-            var count = remember {0}
-            fun getNextInt() = count++
+            // List of Babs
             LazyColumn(userScrollEnabled = true,
                 modifier = Modifier
                     .height(400.dp)
@@ -268,9 +270,6 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                     count = dummyBabList.size,
                     itemContent = { index ->
                         BabCard(dummyBabList[index])
-                    },
-                    key = {
-                        getNextInt()
                     }
                 )
             }
@@ -278,23 +277,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
     }
 }
 
-@Composable
-fun AbstractButton() {
-    // TODO: To take in a theme and function
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun UserIcon() {
-    GlideImage(
-        model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
-        contentDescription = "",
-        modifier = Modifier
-            .size(150.dp)
-            .clip(RoundedCornerShape(10))
-    )
-}
-
+// Bab card for Bab list
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun BabCard(bab : Bab) {
@@ -366,4 +349,22 @@ fun BabCard(bab : Bab) {
         }
     }
     }
+}
+
+// --------- Would be nice to have:
+@Composable
+fun AbstractButton() {
+    // TODO: To take in a theme and function
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun UserIcon() {
+    GlideImage(
+        model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+        contentDescription = "",
+        modifier = Modifier
+            .size(150.dp)
+            .clip(RoundedCornerShape(10))
+    )
 }
