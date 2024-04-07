@@ -12,4 +12,4 @@ for the other screens too?
 I guess the only other thing for this screen would be loading the correct babs, but we need
 the database/API for that.
 
-![alt text](![babble_feed_photo.png](babble_feed_photo.png))
+![alt text](babble_feed_photo.png)
