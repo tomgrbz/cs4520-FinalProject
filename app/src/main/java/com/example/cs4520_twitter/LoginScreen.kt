@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 
+private val darkerBlue :  androidx.compose.ui.graphics.Color = Color(0xFF6880FF) // 0xFF9BAAF8
 private val blue :  androidx.compose.ui.graphics.Color = Color(0xFF9BAAF8) // 0xFF9BAAF8
 private val transition :  androidx.compose.ui.graphics.Color = Color(0xFFB9C1F1)
 private val yellow :  androidx.compose.ui.graphics.Color = Color(0xFFFFF5E2) // 0xFFFFF5E2
@@ -154,14 +155,14 @@ fun LoginScreenComposable() {
 
             Text(
                 text = "Don't have an account?\nClick to sign up!",
-                color = blue,
+                color = darkerBlue,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .height(60.dp)
                     .width(350.dp)
                     .constrainAs(registerText) {
-                        top.linkTo(loginButton.bottom, margin = 50.dp)
+                        top.linkTo(loginButton.bottom, margin = (maxHeight/9).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
                             margin = 25.dp)
