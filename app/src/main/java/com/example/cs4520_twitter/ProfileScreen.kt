@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,11 +16,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -48,6 +54,7 @@ import com.example.cs4520_twitter.data.User
 import com.example.cs4520_twitter.data.UserProfile
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
+import com.example.cs4520_twitter.ui.theme.darkerPink
 import java.text.SimpleDateFormat
 
 val dummyUsername = "babble_user"
@@ -262,7 +269,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
             // List of Babs
             LazyColumn(userScrollEnabled = true,
                 modifier = Modifier
-                    .height(400.dp)
+                    .height((maxHeight * 0.5).dp)
                     .width((maxWidth * 0.93).dp)
                     .constrainAs(babColumn) {
                         top.linkTo(userBanner.bottom, margin = 10.dp)
@@ -349,6 +356,24 @@ fun BabCard(bab : Bab) {
                         top.linkTo(parent.bottom, margin = (-20).dp)
                         absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
                     })
+
+                val isLiked = remember { mutableStateOf(false) } // is bab liked?
+                IconToggleButton(
+                    modifier = Modifier.constrainAs(heart) {
+                        top.linkTo(parent.bottom, margin = (-40).dp)
+                        absoluteLeft.linkTo(date.absoluteRight, margin = 5.dp)
+                    },
+                    checked = isLiked.value,
+                    onCheckedChange = {
+                        isLiked .value= !isLiked.value}) {
+                    Icon(
+                        imageVector = if (isLiked.value) Icons.Filled.Favorite
+                        else Icons.Filled.FavoriteBorder,
+                        tint = darkerPink,
+                        contentDescription = "Heart/Like Icon",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
             }
         }
     }
