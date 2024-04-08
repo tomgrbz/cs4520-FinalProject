@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 import java.util.Date
 
 @Entity(tableName = "babs")
-data class Bab(
+data class BabEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0, // Stored as String in the database
-    @Embedded(prefix = "user_")
+    @Embedded(prefix = "user_") // need to add prefix to embedded type, since id's clash
     val authorUser: UserEntity,
     val content: String,
     val date: Date,

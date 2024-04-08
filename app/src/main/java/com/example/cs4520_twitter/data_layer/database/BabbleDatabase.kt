@@ -7,6 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.cs4520_twitter.utils.UserEntityTypeConverter
 
+/**
+ * Room DB instance for Babble
+ * Has 3 main tables: User, UserProfile, and Babs
+ *
+ * Provides singleton method of getting an instance handle
+ * of the DB
+ */
 @Database(entities = [UserEntity::class], version = 1)
 @TypeConverters(UserEntityTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {

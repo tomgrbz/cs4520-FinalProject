@@ -7,6 +7,10 @@ import java.util.UUID
 
 @Entity(tableName = "users")
 data class UserEntity(
+    /**
+     * Need to convert to string as Room DB does not have native
+     * support for UUID :(
+     */
     @PrimaryKey
     val id: String = UUID.randomUUID().toString(),
     val username: String,

@@ -4,6 +4,9 @@ import androidx.room.TypeConverter
 import java.util.Date
 import java.util.UUID
 
+/**
+ * Type converter class used by RoomDB for entity fields of Date and UUID
+ */
 class UserEntityTypeConverter {
 
     @TypeConverter
