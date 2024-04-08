@@ -1,0 +1,14 @@
+package com.example.cs4520_twitter.data_layer.database
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+
+@Dao
+interface UserProfileDao {
+    @Insert
+    suspend fun insert(userProfile: UserProfile)
+
+    @Query("SELECT * FROM user_profiles WHERE user_id = :userID")
+    suspend fun getUserProfileById(userID: String): UserProfile?
+}
