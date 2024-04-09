@@ -22,7 +22,7 @@ interface BabDao {
      * Gets all babs associated with given user id
      */
     @Query("SELECT * FROM babs WHERE user_id = :userID")
-    suspend fun getAllFromUserByUserID(userID: String)
+    suspend fun getAllFromUserByUserID(userID: String): List<BabEntity?>
 
     @Query("DELETE FROM babs WHERE id = :babId")
     suspend fun deleteById(babId: String)

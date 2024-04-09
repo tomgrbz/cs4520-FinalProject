@@ -14,8 +14,8 @@ interface UserDAO {
      * Gets user object with given user id (UUID as string)
      */
     @Query("SELECT * FROM users WHERE id = :userID")
-    suspend fun getByUserID(userID: String)
+    suspend fun getByUserID(userID: String): UserEntity
 
     @Insert
-    suspend fun insert(userID: String)
+    suspend fun insert(user: UserEntity)
 }

@@ -14,7 +14,7 @@ import com.example.cs4520_twitter.utils.UserEntityTypeConverter
  * Provides singleton method of getting an instance handle
  * of the DB
  */
-@Database(entities = [UserEntity::class], version = 1)
+@Database(entities = [UserEntity::class, UserProfileEntity::class, BabEntity::class], version = 1)
 @TypeConverters(UserEntityTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDAO
