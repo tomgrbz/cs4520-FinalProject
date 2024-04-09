@@ -1,5 +1,6 @@
 package com.example.cs4520_twitter.data_layer.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
