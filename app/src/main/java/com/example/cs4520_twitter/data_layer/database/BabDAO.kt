@@ -23,4 +23,7 @@ interface BabDao {
      */
     @Query("SELECT * FROM babs WHERE user_id = :userID")
     suspend fun getAllFromUserByUserID(userID: String)
+
+    @Query("DELETE FROM babs WHERE id = :babId")
+    suspend fun deleteById(babId: String)
 }
