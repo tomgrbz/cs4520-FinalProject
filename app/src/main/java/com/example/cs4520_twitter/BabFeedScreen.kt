@@ -1,11 +1,9 @@
 package com.example.cs4520_twitter
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +15,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -69,6 +73,7 @@ import com.example.cs4520_twitter.data.User
 import java.text.SimpleDateFormat
 
 private val darkerBlue :  androidx.compose.ui.graphics.Color = Color(0xFF6880FF) // 0xFF9BAAF8
+val darkerPink = Color(0xFFFF7BF1)
 private val blue :  androidx.compose.ui.graphics.Color = Color(0xFF9BAAF8) // 0xFF9BAAF8
 private val transition :  androidx.compose.ui.graphics.Color = Color(0xFFB9C1F1)
 private val yellow :  androidx.compose.ui.graphics.Color = Color(0xFFFFF5E2) // 0xFFFFF5E2
@@ -96,13 +101,16 @@ fun BabFeedComposable() {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
+    val icons = listOf(
+        Icon(Icons.AutoMirrored.Filled.List,  contentDescription = "", modifier = Modifier.size(25.dp), tint = darkerPink),
+        Icon(Icons.Filled.Search, contentDescription = "", modifier = Modifier.size(25.dp), tint = blue),
+        Icon(Icons.Filled.AccountCircle, contentDescription = "", modifier = Modifier.size(25.dp), tint = blue))
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
     {
         var selectedItem by remember { mutableIntStateOf(0) }
-        val items = listOf("Feed", "Search", "Profile")
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
@@ -114,7 +122,7 @@ fun BabFeedComposable() {
                     title = {
                         Text("Babble Feed",
                             modifier = Modifier
-                            .fillMaxWidth(),
+                                .fillMaxWidth(),
                             textAlign = TextAlign.Center)
                     }
                 )
@@ -124,15 +132,25 @@ fun BabFeedComposable() {
                     containerColor = Color.White,
                     contentColor = Color.White,
                 ) {
-                    NavigationBar {
-                        items.forEachIndexed { index, item ->
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Filled.Favorite, contentDescription = item) },
-                                label = { Text(item) },
-                                selected = selectedItem == index,
-                                onClick = { selectedItem = index }
-                            )
-                        }
+                    NavigationBar(containerColor = Color.White) {
+                        NavigationBarItem(
+                            icon = {Icon(Icons.AutoMirrored.Filled.List,  contentDescription = "", modifier = Modifier.size(35.dp), tint = blue) },
+                            label = { Text("Feed") },
+                            selected = false,
+                            onClick = {selectedItem = 0}
+                        )
+                        NavigationBarItem(
+                            icon = {Icon(Icons.Filled.Search, contentDescription = "", modifier = Modifier.size(35.dp), tint = blue) },
+                            label = { Text("Search") },
+                            selected = false,
+                            onClick = {selectedItem = 1}
+                        )
+                        NavigationBarItem(
+                            icon = {Icon(Icons.Filled.AccountCircle, contentDescription = "", modifier = Modifier.size(35.dp), tint = blue)},
+                            label = { Text("Profile") },
+                            selected = false,
+                            onClick = {selectedItem = 2}
+                        )
                     }
                 }
             },
@@ -165,7 +183,8 @@ fun BabCard(bab : Bab) {
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
     Card(modifier = Modifier
-        .fillMaxWidth().height((maxHeight/5.25).dp)
+        .fillMaxWidth()
+        .height((maxHeight / 5.25).dp)
         .padding(horizontal = 8.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -173,7 +192,9 @@ fun BabCard(bab : Bab) {
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
-            ConstraintLayout(modifier = Modifier.fillMaxWidth().height((maxHeight/5).dp)) {
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight / 5).dp)) {
                 val (date, username, content, likes, userIcon, heart) = createRefs()
                 GlideImage( // this is the icon image
                     model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
@@ -194,7 +215,7 @@ fun BabCard(bab : Bab) {
                         )
                         .constrainAs(userIcon) {
                             // halfway icon height
-                            top.linkTo(parent.top, margin = (maxHeight/10 - 60).dp)
+                            top.linkTo(parent.top, margin = (maxHeight / 10 - 60).dp)
                             // Place icon midway the screen's width
                             absoluteLeft.linkTo(
                                 parent.absoluteLeft,
@@ -227,6 +248,24 @@ fun BabCard(bab : Bab) {
                         top.linkTo(parent.bottom, margin = (-20).dp)
                         absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
                     })
+
+                val isLiked = remember { mutableStateOf(false) } // is bab liked?
+                IconToggleButton(
+                    modifier = Modifier.constrainAs(heart) {
+                        top.linkTo(parent.bottom, margin = (-40).dp)
+                        absoluteLeft.linkTo(date.absoluteRight, margin = 5.dp)
+                    },
+                    checked = isLiked.value,
+                    onCheckedChange = {
+                        isLiked .value= !isLiked.value}) {
+                    Icon(
+                        imageVector = if (isLiked.value) Icons.Filled.Favorite
+                        else Icons.Filled.FavoriteBorder,
+                        tint = darkerPink,
+                        contentDescription = "Heart/Like Icon",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
             }
         }
     }
