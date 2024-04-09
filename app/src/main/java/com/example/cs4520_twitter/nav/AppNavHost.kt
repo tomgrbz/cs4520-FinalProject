@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter
+package com.example.cs4520_twitter.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,14 +13,16 @@ enum class Screen {
     PROFILE,
     SEARCH,
     FOLLOWERS,
+    ADD_BAB
 }
 sealed class NavigationItem(val route: String) {
     object Feed : NavigationItem(Screen.FEED.name)
     object Login : NavigationItem(Screen.LOGIN.name)
-    object EditProfile : NavigationItem(Screen.LOGIN.name)
-    object Profile : NavigationItem(Screen.LOGIN.name)
-    object Search : NavigationItem(Screen.LOGIN.name)
-    object Followers : NavigationItem(Screen.LOGIN.name)
+    object EditProfile : NavigationItem(Screen.EDIT_PROFILE.name)
+    object Profile : NavigationItem(Screen.PROFILE.name)
+    object Search : NavigationItem(Screen.SEARCH.name)
+    object Followers : NavigationItem(Screen.FOLLOWERS.name)
+    object AddBab: NavigationItem(Screen.ADD_BAB.name)
 
 
 }
@@ -36,10 +38,11 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable(NavigationItem.Feed.route) {
-//            HomeScreen()
+//            HomeScreen() TODO("update to the screen components as they are implemented")
         }
         composable(NavigationItem.Login.route) {
 //            LoginScreen(navController)
+
         }
         composable(NavigationItem.Profile.route) {
 //            LoginScreen(navController)
