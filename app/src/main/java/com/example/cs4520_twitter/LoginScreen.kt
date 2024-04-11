@@ -19,11 +19,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,20 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
+import com.example.cs4520_twitter.ui.theme.blue
+import com.example.cs4520_twitter.ui.theme.darkerBlue
 
-private val darkerBlue :  androidx.compose.ui.graphics.Color = Color(0xFF6880FF) // 0xFF9BAAF8
-private val blue :  androidx.compose.ui.graphics.Color = Color(0xFF9BAAF8) // 0xFF9BAAF8
-private val transition :  androidx.compose.ui.graphics.Color = Color(0xFFB9C1F1)
-private val yellow :  androidx.compose.ui.graphics.Color = Color(0xFFFFF5E2) // 0xFFFFF5E2
-private val backgroundBrushBlueYellowTheme : Brush = Brush.linearGradient(
-    colors = listOf(blue, transition, yellow),
-    start = Offset(0f, 0f),
-    Offset(0f, Float.POSITIVE_INFINITY),
-    tileMode = TileMode.Clamp)
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenComposable() {
-    val configuration = LocalConfiguration.current
+    val configuration = LocalConfiguration.current // for obtaining screen dimensions
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
 
@@ -64,21 +55,23 @@ fun LoginScreenComposable() {
             var usernameText by remember { mutableStateOf("") }
             var passwordText by remember { mutableStateOf("") }
 
-            // Username text
+            // Babble title text
+            val titleFontSize = 30
             Text("Babble",
-                fontSize = 30.sp,
+                fontSize = titleFontSize.sp,
                 style = TextStyle(shadow = Shadow(blurRadius = 3f)),
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .constrainAs(babbleTitle) {
-                        top.linkTo(parent.top, margin = (maxHeight/15).dp)
+                        top.linkTo(parent.top, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = (maxWidth/2.6).dp
+                            margin = ((maxWidth - titleFontSize * 3)/2).dp // center text
                         )
                     })
 
-            // user desc.
+            // username text field
             TextField(
                 value = usernameText,
                 onValueChange = { usernameText = it },
@@ -98,13 +91,13 @@ fun LoginScreenComposable() {
                     .height(50.dp)
                     .width(250.dp)
                     .constrainAs(username) {
-                        top.linkTo(babbleTitle.bottom, margin = (maxHeight/10).dp)
+                        top.linkTo(babbleTitle.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
                             margin = (maxWidth/2 - 250/2).dp)
                     })
 
-            // user desc.
+            // password text field
             TextField(
                 value = passwordText,
                 onValueChange = { passwordText = it },
@@ -125,20 +118,20 @@ fun LoginScreenComposable() {
                     .height(50.dp)
                     .width(250.dp)
                     .constrainAs(password) {
-                        top.linkTo(username.bottom, margin = (maxHeight/20).dp)
+                        top.linkTo(username.bottom, margin = (maxHeight * 0.05).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
                             margin = (maxWidth/2 - 250/2).dp)
                     })
 
-            // Button for viewing my followers
+            // Button for login
             Button(
-                onClick = {},
+                onClick = {}, // TODO: button functionality
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
                     .constrainAs(loginButton) {
-                        top.linkTo(password.bottom, margin = (maxHeight/20).dp)
+                        top.linkTo(password.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
                             margin = (maxWidth/2 - 110/2).dp)
@@ -153,7 +146,7 @@ fun LoginScreenComposable() {
                 )
             }
 
-            Text(
+            Text( // TODO: on click functionality for registration
                 text = "Don't have an account?\nClick to sign up!",
                 color = darkerBlue,
                 fontSize = 16.sp,
@@ -162,7 +155,7 @@ fun LoginScreenComposable() {
                     .height(60.dp)
                     .width(350.dp)
                     .constrainAs(registerText) {
-                        top.linkTo(loginButton.bottom, margin = (maxHeight/9).dp)
+                        top.linkTo(loginButton.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
                             margin = 25.dp)
