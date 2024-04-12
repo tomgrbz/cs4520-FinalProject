@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,8 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data.Bab
 import com.example.cs4520_twitter.data.User
 import com.example.cs4520_twitter.data.UserProfile
@@ -56,6 +53,8 @@ import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerPink
 import java.text.SimpleDateFormat
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 
 val dummyUsername = "babble_user"
 val dummyUser = User("_", dummyUsername, "", "password")
@@ -65,7 +64,7 @@ val dummyBab = Bab(
     content = "I made a post!",
     date = SimpleDateFormat("yyyy-MM-dd").parse("2024-04-07"),
     likes = 3,
-    likedUserList = mutableListOf<String>())
+    likedUserList = mutableListOf<String>(dummyUsername))
 val dummyProfile = UserProfile(id = "user1",
     user = dummyUser,
     description = "Hello!",
@@ -74,6 +73,7 @@ val dummyProfile = UserProfile(id = "user1",
     followingCount = 0,
     followingList = mutableListOf<User>(),
     babCount = 4)
+val dummyImageURL = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg"
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -87,8 +87,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
     val dummyBabCount = profile.babCount
     val usernameSize = 20 // hardcoded dim.'s
     val dataTextSize = 14
-    val iconDim = maxWidth/3.8 // around a quarter of the screen width
-    // I guess we would look up the bab database according to profile user id
+    val iconDim = maxWidth * 0.30 // around a quarter of the screen width
     val dummyBabList = mutableListOf<Bab>(dummyBab, dummyBab, dummyBab, dummyBab)
 
     Box(modifier = with (Modifier) {
@@ -96,16 +95,16 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
     })
     {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (userBanner,
-                userIcon,
+            val (userBanner, // the white banner
+                userIcon,    // user's profile image
                 username,
                 followerCount,
                 followingCount,
                 babCount,
                 editButton,
-                myFollowersButton,
+                myFollowersButton, // button to navigate to followers screen
                 userDesc,
-                babColumn// babs made by this user
+                babColumn          // list of THIS user's babs
             ) = createRefs()
 
             var userDescText by remember { mutableStateOf("Hello!") }
@@ -119,7 +118,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                 })
 
             GlideImage( // this is the user icon image
-                model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+                model = dummyImageURL,
                 contentScale = ContentScale.Crop,
                 failure = placeholder(ColorPainter(Color.White)),
                 loading = placeholder(ColorPainter(Color.White)),
@@ -207,7 +206,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                     .height(35.dp)
                     .width(110.dp)
                     .constrainAs(editButton) {
-                        top.linkTo(userDesc.bottom, margin = 10.dp)
+                        top.linkTo(userDesc.bottom)
                         absoluteRight.linkTo(
                             userBanner.absoluteRight,
                             margin = 10.dp
@@ -248,7 +247,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
             TextField(
                 value = userDescText,
                 onValueChange = { userDescText = it },
-                // enabled = false, // uncomment this to disallow users from typing
+                enabled = false, // uncomment this to allow users to type
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -256,7 +255,7 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent),
                 modifier = Modifier
-                    .height(70.dp)
+                    .height(60.dp)
                     .width(350.dp)
                     .constrainAs(userDesc) {
                         top.linkTo(username.bottom, margin = 0.dp)
@@ -269,8 +268,8 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
             // List of Babs
             LazyColumn(userScrollEnabled = true,
                 modifier = Modifier
-                    .height((maxHeight * 0.5).dp)
-                    .width((maxWidth * 0.93).dp)
+                    .height((maxHeight * 0.5).dp) // half the screen
+                    .width((maxWidth * 0.93).dp)  // most of the screen width
                     .constrainAs(babColumn) {
                         top.linkTo(userBanner.bottom, margin = 10.dp)
                         absoluteLeft.linkTo(parent.absoluteLeft, margin = ((maxWidth * 0.07)/2).dp)
@@ -294,7 +293,7 @@ fun BabCard(bab : Bab) {
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
     Card(modifier = Modifier
-        .fillMaxWidth().height((maxHeight/5.25).dp)
+        .fillMaxWidth().height((maxHeight * 0.2).dp)
         .padding(horizontal = 8.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -302,10 +301,10 @@ fun BabCard(bab : Bab) {
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
-            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight/5).dp)) {
+            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight * 0.2).dp)) {
                 val (date, username, content, likes, userIcon, heart) = createRefs()
                 GlideImage( // this is the icon image
-                    model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+                    model = dummyImageURL,
                     contentScale = ContentScale.Crop,
                     loading = placeholder(ColorPainter(Color.White)),
                     failure = placeholder(ColorPainter(Color.White)),
@@ -323,7 +322,7 @@ fun BabCard(bab : Bab) {
                         )
                         .constrainAs(userIcon) {
                             // halfway icon height
-                            top.linkTo(parent.top, margin = (maxHeight/10 - 60).dp)
+                            top.linkTo(parent.top, margin = (maxHeight * 0.1 - 65).dp)
                             // Place icon midway the screen's width
                             absoluteLeft.linkTo(
                                 parent.absoluteLeft,
@@ -383,16 +382,4 @@ fun BabCard(bab : Bab) {
 @Composable
 fun AbstractButton() {
     // TODO: To take in a theme and function
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun UserIcon() {
-    GlideImage(
-        model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
-        contentDescription = "",
-        modifier = Modifier
-            .size(150.dp)
-            .clip(RoundedCornerShape(10))
-    )
 }
