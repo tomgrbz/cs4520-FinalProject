@@ -3,7 +3,6 @@ package com.example.cs4520_twitter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,26 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,24 +27,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,6 +52,7 @@ import com.example.cs4520_twitter.data.Bab
 import com.example.cs4520_twitter.data.User
 import java.text.SimpleDateFormat
 
+// Steph: I will remove the color/theme below during the merge since it is already in a color folder in main.
 private val darkerBlue :  androidx.compose.ui.graphics.Color = Color(0xFF6880FF) // 0xFF9BAAF8
 val darkerPink = Color(0xFFFF7BF1)
 private val blue :  androidx.compose.ui.graphics.Color = Color(0xFF9BAAF8) // 0xFF9BAAF8
@@ -81,7 +63,6 @@ private val backgroundBrushBlueYellowTheme : Brush = Brush.linearGradient(
     start = Offset(0f, 0f),
     Offset(0f, Float.POSITIVE_INFINITY),
     tileMode = TileMode.Clamp)
-
 val dummyUsername = "babble_user"
 val dummyUser = User("_", dummyUsername, "", "password")
 val dummyBab = Bab(
@@ -105,7 +86,7 @@ fun AddBabScreenComposable() {
     {
         Scaffold(
             containerColor = Color.Transparent,
-            topBar = {
+            topBar = { // Add a Bab screen title
                 TopAppBar(
                     colors = topAppBarColors(
                         containerColor = Color.White,
@@ -119,14 +100,13 @@ fun AddBabScreenComposable() {
                     }
                 )
             },
-            bottomBar = { },
-            floatingActionButton = {
-            }
+            bottomBar = {},
+            floatingActionButton = {}
         ) { innerPadding ->
             ConstraintLayout(
                 modifier = Modifier
                     .padding(innerPadding)
-            ) { // References
+            ) {
                 val (userCard, // Display the logged in user card
                     textField, // text field for writing new Bab
                     addBabButton) = createRefs()
@@ -160,7 +140,7 @@ fun AddBabScreenComposable() {
                         .height((maxHeight * 0.30).dp)
                         .width((maxWidth * 0.85).dp)
                         .constrainAs(textField) {
-                            top.linkTo(userCard.bottom, margin = (maxHeight*0.03).dp)
+                            top.linkTo(userCard.bottom, margin = (maxHeight * 0.03).dp)
                             absoluteLeft.linkTo(
                                 parent.absoluteLeft,
                                 margin = (maxWidth/2 - (maxWidth * 0.85)/2).dp)
@@ -192,7 +172,7 @@ fun AddBabScreenComposable() {
     }
 }
 
-// Bab card for Bab list
+// Add a Bab User card to go over the bab text field
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun AddBabUserCard(bab : Bab) {
@@ -213,8 +193,9 @@ fun AddBabUserCard(bab : Bab) {
             ConstraintLayout (modifier = Modifier
                 .fillMaxWidth()
                 .height((maxHeight / 5).dp)) {
-                val (date, username, userIcon) = createRefs()
-                GlideImage( // this is the icon image
+                val (username, userIcon) = createRefs() // references
+                // this is the icon image
+                GlideImage(
                     model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
                     contentScale = ContentScale.Crop,
                     loading = placeholder(ColorPainter(Color.White)),
@@ -233,14 +214,14 @@ fun AddBabUserCard(bab : Bab) {
                         )
                         .constrainAs(userIcon) {
                             // halfway icon height
-                            top.linkTo(parent.top, margin = ((maxHeight * 0.115) / 2 - (iconSize /2)).dp)
+                            top.linkTo(parent.top, margin = ((maxHeight * 0.12) / 2 - (iconSize /2)).dp)
                             // Place icon midway the screen's width
                             absoluteLeft.linkTo(
                                 parent.absoluteLeft,
-                                margin = (10).dp
+                                margin = (15).dp
                             )
                         })
-
+                // The logged in user's name
                 Text("@" + bab.authorUser.username,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
