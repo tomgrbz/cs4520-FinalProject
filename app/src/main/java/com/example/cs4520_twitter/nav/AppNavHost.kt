@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.cs4520_twitter.search.SearchScreen
 
 enum class Screen {
     FEED,
@@ -51,7 +52,7 @@ fun AppNavHost(
 //            LoginScreen(navController)
         }
         composable(NavigationItem.Search.route) {
-//            LoginScreen(navController)
+            SearchScreen()
         }
         composable(NavigationItem.Followers.route) {
 //            LoginScreen(navController)
