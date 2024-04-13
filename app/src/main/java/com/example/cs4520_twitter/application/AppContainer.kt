@@ -2,6 +2,8 @@ package com.example.cs4520_twitter.application
 
 import android.content.Context
 import androidx.room.Room
+import com.example.cs4520_twitter.data_layer.api.Api
+
 /**
  * AppContainer that is shareable between fragments for instantiating and dependency injecting
  * the ProductListFragment and its ViewModel

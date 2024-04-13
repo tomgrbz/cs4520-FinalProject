@@ -23,8 +23,8 @@ object Api {
             .build()
     }
 
-    val babsApiService: BabbleApi by lazy {
-        babsRetrofit.create(BabbleApi::class.java)
+    val babsApiService: BabApi by lazy {
+        babsRetrofit.create(BabApi::class.java)
     }
 
     private val usersRetrofit: Retrofit by lazy {
@@ -46,8 +46,8 @@ object Api {
             .build()
     }
 
-    val loginApiService: BabbleApi by lazy {
-        usersRetrofit.create(BabbleApi::class.java)
+    val loginApiService: LoginApi by lazy {
+        loginRetrofit.create(LoginApi::class.java)
     }
 
 
@@ -58,8 +58,8 @@ object Api {
             .build()
     }
 
-    val signupApiService: BabbleApi by lazy {
-        usersRetrofit.create(BabbleApi::class.java)
+    val signupApiService: SignupApi by lazy {
+        signupRetrofit.create(SignupApi::class.java)
     }
 
     private val profilesRetrofit: Retrofit by lazy {
@@ -69,8 +69,8 @@ object Api {
             .build()
     }
 
-    val profilesApiService: BabbleApi by lazy {
-        usersRetrofit.create(BabbleApi::class.java)
+    val profilesApiService: ProfilesApi by lazy {
+        profilesRetrofit.create(ProfilesApi::class.java)
     }
 
     private val followsRetrofit: Retrofit by lazy {
@@ -80,8 +80,8 @@ object Api {
             .build()
     }
 
-    val followsApiService: BabbleApi by lazy {
-        usersRetrofit.create(BabbleApi::class.java)
+    val followsApiService: FollowsApi by lazy {
+        followsRetrofit.create(FollowsApi::class.java)
     }
 
 
