@@ -3,33 +3,47 @@ package com.example.cs4520_twitter.application
 import android.content.Context
 import androidx.room.Room
 import com.example.cs4520_twitter.data_layer.api.Api
+import com.example.cs4520_twitter.data_layer.database.AppDatabase
 
 /**
- * AppContainer that is shareable between fragments for instantiating and dependency injecting
- * the ProductListFragment and its ViewModel
+ * AppContainer that is shareable across view models for fetching data or updating data
+ * via specific endpoints. Also holds on to local data source of the BabsDatabase
  */
 class AppContainer {
+    
+    private val babsService = Api.babsApiService
 
-    // The api client for fetching products from API endpoint
-    private val remoteDataSource = Api.apiService
+    private val followsApiService = Api.followsApiService
 
-    // Client for local room database of products
-    private lateinit var localDataSource: LocalDatabase
+    private val loginApiService = Api.loginApiService
 
-    lateinit var productRepository: ProductRepository
+    private val signupApiService = Api.signupApiService
 
+    private val profilesApiService = Api.profilesApiService
+
+    private val usersApiService = Api.usersApiService
+
+    // Client for local room database
+    private lateinit var localDataSource: AppDatabase
+
+    /**
+     * Example of how to define repos
+     *
+    lateinit var usersRepo: UserRepo
+
+     */
     // If there is already a ProductRepository instance, as Singleton representation
     private var instance: Boolean = false
 
     fun createLocalDataSource(context: Context) {
         localDataSource =
-            Room.databaseBuilder(context, LocalDatabase::class.java, "productsDB").build()
+            Room.databaseBuilder(context, AppDatabase::class.java, "babbleDB").build()
     }
 
-    fun createProductRepository(context: Context) {
-        if (!instance && this::localDataSource.isInitialized) {
-            productRepository = ProductRepository(remoteDataSource, localDataSource, context)
-            instance = true
-        }
-    }
+//    fun createProductRepository(context: Context) {
+//        if (!instance && this::localDataSource.isInitialized) {
+//            productRepository = ProductRepository(remoteDataSource, localDataSource, context)
+//            instance = true
+//        }
+//    }
 }
