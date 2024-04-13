@@ -1,30 +1,19 @@
-package com.example.cs4520_twitter
+package com.example.cs4520_twitter.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,51 +23,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.example.cs4520_twitter.data.Bab
-import com.example.cs4520_twitter.data.User
-import com.example.cs4520_twitter.data.UserProfile
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
-import com.example.cs4520_twitter.ui.theme.darkerPink
-import java.text.SimpleDateFormat
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
+import com.example.cs4520_twitter.data_layer.database.dummyBab
+import com.example.cs4520_twitter.data_layer.database.dummyImageURL
+import com.example.cs4520_twitter.data_layer.database.dummyProfile
+import com.example.cs4520_twitter.data_layer.database.dummyUsername
 
-val dummyUsername = "babble_user"
-val dummyUser = User("_", dummyUsername, "", "password")
-val dummyBab = Bab(
-    id = "0",
-    authorUser = dummyUser,
-    content = "I made a post!",
-    date = SimpleDateFormat("yyyy-MM-dd").parse("2024-04-07"),
-    likes = 3,
-    likedUserList = mutableListOf<String>(dummyUsername))
-val dummyProfile = UserProfile(id = "user1",
-    user = dummyUser,
-    description = "Hello!",
-    followerCount = 0,
-    followerList = mutableListOf<User>(),
-    followingCount = 0,
-    followingList = mutableListOf<User>(),
-    babCount = 4)
-val dummyImageURL = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg"
-
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
+// File contains screen composable. Dummy data is imported from the database folder.
+@OptIn(ExperimentalGlideComposeApi::class)
 @Preview(showBackground = true)
 @Composable
-fun UserProfileScreen(profile : UserProfile = dummyProfile) {
+fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
@@ -87,8 +56,8 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
     val dummyBabCount = profile.babCount
     val usernameSize = 20 // hardcoded dim.'s
     val dataTextSize = 14
-    val iconDim = maxWidth * 0.30 // around a quarter of the screen width
-    val dummyBabList = mutableListOf<Bab>(dummyBab, dummyBab, dummyBab, dummyBab)
+    val iconDim = maxWidth * 0.30 // around a third of the screen width
+    val dummyBabList = mutableListOf(dummyBab, dummyBab, dummyBab, dummyBab, dummyBab)
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -249,11 +218,14 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
                 onValueChange = { userDescText = it },
                 enabled = false, // uncomment this to allow users to type
                 singleLine = true,
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.White,
-                    focusedIndicatorColor =  Color.Transparent,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent),
+                    disabledIndicatorColor = Color.Transparent,
+                ),
                 modifier = Modifier
                     .height(60.dp)
                     .width(350.dp)
@@ -269,10 +241,10 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
             LazyColumn(userScrollEnabled = true,
                 modifier = Modifier
                     .height((maxHeight * 0.5).dp) // half the screen
-                    .width((maxWidth * 0.93).dp)  // most of the screen width
+                    .width((maxWidth * 0.95).dp)  // most of the screen width
                     .constrainAs(babColumn) {
                         top.linkTo(userBanner.bottom, margin = 10.dp)
-                        absoluteLeft.linkTo(parent.absoluteLeft, margin = ((maxWidth * 0.07)/2).dp)
+                        absoluteLeft.linkTo(parent.absoluteLeft, margin = ((maxWidth * 0.05)/2).dp)
                     }) {
                 items(
                     count = dummyBabList.size,
@@ -283,103 +255,4 @@ fun UserProfileScreen(profile : UserProfile = dummyProfile) {
             }
         }
     }
-}
-
-// Bab card for Bab list
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun BabCard(bab : Bab) {
-    val configuration = LocalConfiguration.current
-    val maxHeight = configuration.screenHeightDp
-    val maxWidth = configuration.screenWidthDp
-    Card(modifier = Modifier
-        .fillMaxWidth().height((maxHeight * 0.2).dp)
-        .padding(horizontal = 8.dp, vertical = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        shape = RoundedCornerShape(corner = CornerSize(15.dp))
-    ) {
-        Row {
-            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight * 0.2).dp)) {
-                val (date, username, content, likes, userIcon, heart) = createRefs()
-                GlideImage( // this is the icon image
-                    model = dummyImageURL,
-                    contentScale = ContentScale.Crop,
-                    loading = placeholder(ColorPainter(Color.White)),
-                    failure = placeholder(ColorPainter(Color.White)),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp) // hardcoded icon dim.'s, etc.
-                        .shadow(
-                            elevation = 5.dp,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = blue,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .constrainAs(userIcon) {
-                            // halfway icon height
-                            top.linkTo(parent.top, margin = (maxHeight * 0.1 - 65).dp)
-                            // Place icon midway the screen's width
-                            absoluteLeft.linkTo(
-                                parent.absoluteLeft,
-                                margin = (10).dp
-                            )
-                        })
-
-                Text("@" + bab.authorUser.username,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.constrainAs(username) {
-                        bottom.linkTo(userIcon.top, margin = (-15).dp)
-                        absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
-                    })
-
-                Text(bab.content, modifier = Modifier.constrainAs(content) {
-                    top.linkTo(username.bottom)
-                    absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
-                })
-
-                Text("Likes: " + bab.likes.toString(), color = blue,
-                    modifier = Modifier.constrainAs(likes) {
-                        top.linkTo(parent.bottom, margin = (-20).dp)
-                        absoluteLeft.linkTo(parent.absoluteLeft, margin = 20.dp)
-                    })
-
-                // Date object may be deprecated
-                Text("Date: " + bab.date.toString(), color = blue,
-                    modifier = Modifier.constrainAs(date) {
-                        top.linkTo(parent.bottom, margin = (-20).dp)
-                        absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
-                    })
-
-                val isLiked = remember { mutableStateOf(false) } // is bab liked?
-                IconToggleButton(
-                    modifier = Modifier.constrainAs(heart) {
-                        top.linkTo(parent.bottom, margin = (-40).dp)
-                        absoluteLeft.linkTo(date.absoluteRight, margin = 5.dp)
-                    },
-                    checked = isLiked.value,
-                    onCheckedChange = {
-                        isLiked .value= !isLiked.value}) {
-                    Icon(
-                        imageVector = if (isLiked.value) Icons.Filled.Favorite
-                        else Icons.Filled.FavoriteBorder,
-                        tint = darkerPink,
-                        contentDescription = "Heart/Like Icon",
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-// --------- Would be nice to have:
-@Composable
-fun AbstractButton() {
-    // TODO: To take in a theme and function
 }
