@@ -11,17 +11,17 @@ import com.example.cs4520_twitter.data_layer.database.AppDatabase
  */
 class AppContainer {
 
-    private val babsService = Api.babsApiService
+    val babsService = Api.babsApiService
 
-    private val followsApiService = Api.followsApiService
+    val followsApiService = Api.followsApiService
 
-    private val loginApiService = Api.loginApiService
+    val loginApiService = Api.loginApiService
 
-    private val signupApiService = Api.signupApiService
+    val signupApiService = Api.signupApiService
 
-    private val profilesApiService = Api.profilesApiService
+    val profilesApiService = Api.profilesApiService
 
-    private val usersApiService = Api.usersApiService
+    val usersApiService = Api.usersApiService
 
     // Client for local room database
     private lateinit var localDataSource: AppDatabase

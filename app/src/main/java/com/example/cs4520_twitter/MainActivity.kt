@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     Box(modifier = with (Modifier) {
                         fillMaxSize().background(backgroundBrushBlueYellowTheme)
                     }) // TODO ("delete after?")
-
+                    LoginScreenComposable()
                     AppNavHost(navController = navController)
                 }
             }

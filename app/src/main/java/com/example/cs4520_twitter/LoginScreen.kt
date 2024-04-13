@@ -45,8 +45,11 @@ fun LoginScreenComposable() {
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
     val viewModel: LoginViewModel = viewModel(factory =  LoginViewModel.Factory)
+    val babs by viewModel.babs.collectAsState()
     // Use to show a loading animation while making api calls
     val isLoading by viewModel.isLoading.collectAsState()
+
+
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -135,7 +138,7 @@ fun LoginScreenComposable() {
 
             // Button for login
             Button(
-                onClick = {}, // TODO: button functionality
+                onClick = {viewModel.login(usernameText, passwordText)}, // TODO: button functionality
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
