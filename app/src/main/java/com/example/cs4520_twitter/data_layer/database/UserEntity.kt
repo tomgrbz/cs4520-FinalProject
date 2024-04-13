@@ -12,7 +12,7 @@ data class UserEntity(
      * support for UUID :(
      */
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    val userID: String = UUID.randomUUID().toString(),
     val username: String,
     val password: String,
     @ColumnInfo(name = "image_href")

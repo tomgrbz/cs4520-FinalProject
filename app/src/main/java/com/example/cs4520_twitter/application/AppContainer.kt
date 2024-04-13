@@ -10,7 +10,7 @@ import com.example.cs4520_twitter.data_layer.database.AppDatabase
  * via specific endpoints. Also holds on to local data source of the BabsDatabase
  */
 class AppContainer {
-    
+
     private val babsService = Api.babsApiService
 
     private val followsApiService = Api.followsApiService
