@@ -2,6 +2,7 @@ package com.example.cs4520_twitter.data_layer.api
 
 import com.example.cs4520_twitter.data_layer.api.models.DeleteBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.LikesResponse
+import com.example.cs4520_twitter.data_layer.api.models.RandomBabsResponse
 import com.example.cs4520_twitter.data_layer.database.BabEntity
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,7 +20,6 @@ interface BabApi {
     suspend fun deleteBab(@Path("babID") babID: Int): DeleteBabResponse
 
     @GET(Api.BABS_ENDPOINT)
-    suspend fun getRandomBabs(): List<BabEntity>
-
+    suspend fun getRandomBabs(): RandomBabsResponse
 
 }
