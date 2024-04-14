@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter
+package com.example.cs4520_twitter.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -40,7 +40,7 @@ import com.example.cs4520_twitter.vms.LoginViewModel
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenComposable() {
+fun LoginScreen() {
     val configuration = LocalConfiguration.current // for obtaining screen dimensions
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
