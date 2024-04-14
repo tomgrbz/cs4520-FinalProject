@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.cs4520_twitter.composables.LoginScreen
+import com.example.cs4520_twitter.composables.UserProfileScreen
 
 enum class Screen {
     FEED,
@@ -23,8 +25,6 @@ sealed class NavigationItem(val route: String) {
     object Search : NavigationItem(Screen.SEARCH.name)
     object Followers : NavigationItem(Screen.FOLLOWERS.name)
     object AddBab: NavigationItem(Screen.ADD_BAB.name)
-
-
 }
 @Composable
 fun AppNavHost(
@@ -41,11 +41,10 @@ fun AppNavHost(
 //            HomeScreen() TODO("update to the screen components as they are implemented")
         }
         composable(NavigationItem.Login.route) {
-//            LoginScreen(navController)
-
+            LoginScreen() // currently uses dummy data
         }
         composable(NavigationItem.Profile.route) {
-//            LoginScreen(navController)
+            UserProfileScreen() // currently uses dummy data
         }
         composable(NavigationItem.EditProfile.route) {
 //            LoginScreen(navController)

@@ -10,10 +10,19 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+
+val backgroundBrushBlueYellowTheme : Brush = Brush.linearGradient(
+    colors = listOf(blue, transition, yellow),
+    start = Offset(0f, 0f),
+    Offset(0f, Float.POSITIVE_INFINITY),
+    tileMode = TileMode.Clamp)
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
