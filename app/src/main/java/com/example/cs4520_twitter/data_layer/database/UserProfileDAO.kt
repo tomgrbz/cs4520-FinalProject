@@ -28,5 +28,9 @@ interface UserProfileDao {
      * Updates user profile with given userID, editing the following count and following list
      */
     @Query("UPDATE user_profiles SET followingList = :followingList, followingCount = :followingCount WHERE user_userID = :userID")
-    suspend fun updateFollowingListByUserID(userID: String, followingList: List<UserEntity>, followingCount: Int)
+    suspend fun updateFollowingListByUserID(
+        userID: String,
+        followingList: List<UserEntity>,
+        followingCount: Int
+    )
 }

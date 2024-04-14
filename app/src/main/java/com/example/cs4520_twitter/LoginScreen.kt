@@ -44,14 +44,14 @@ fun LoginScreenComposable() {
     val configuration = LocalConfiguration.current // for obtaining screen dimensions
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
-    val viewModel: LoginViewModel = viewModel(factory =  LoginViewModel.Factory)
-    val babs by viewModel.babs.collectAsState()
+    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+
     // Use to show a loading animation while making api calls
     val isLoading by viewModel.isLoading.collectAsState()
 
 
 
-    Box(modifier = with (Modifier) {
+    Box(modifier = with(Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
     {
@@ -77,7 +77,7 @@ fun LoginScreenComposable() {
                         top.linkTo(parent.top, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = ((maxWidth - titleFontSize * 3)/2).dp // center text
+                            margin = ((maxWidth - titleFontSize * 3) / 2).dp // center text
                         )
                     })
 
@@ -90,9 +90,10 @@ fun LoginScreenComposable() {
                     Color.Black,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor =  Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent),
+                    disabledIndicatorColor = Color.Transparent
+                ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text("Please enter username", color = blue)
@@ -117,9 +118,10 @@ fun LoginScreenComposable() {
                     Color.Black,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor =  Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent),
+                    disabledIndicatorColor = Color.Transparent
+                ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text("Please enter password", color = blue)
@@ -138,7 +140,12 @@ fun LoginScreenComposable() {
 
             // Button for login
             Button(
-                onClick = {viewModel.login(usernameText, passwordText)}, // TODO: button functionality
+                onClick = {
+                    viewModel.login(
+                        usernameText,
+                        passwordText
+                    )
+                }, // TODO: button functionality
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -151,7 +158,10 @@ fun LoginScreenComposable() {
                     },
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(2.dp, blue),
-                colors = ButtonDefaults.buttonColors(contentColor = blue, containerColor = Color.White)
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = blue,
+                    containerColor = Color.White
+                )
             ) {
                 Text(
                     text = "Login",

@@ -3,7 +3,6 @@ package com.example.cs4520_twitter.data_layer.api
 import com.example.cs4520_twitter.data_layer.api.models.DeleteBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.LikesResponse
 import com.example.cs4520_twitter.data_layer.api.models.RandomBabsResponse
-import com.example.cs4520_twitter.data_layer.database.BabEntity
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

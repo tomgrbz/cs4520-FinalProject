@@ -17,4 +17,4 @@ data class UserEntity(
     val password: String,
     @ColumnInfo(name = "image_href")
     val imageHref: String,
-    )
+)

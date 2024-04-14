@@ -11,8 +11,14 @@ import java.util.UUID
 interface FollowsApi {
 
     @POST(Api.FOLLOWS_ENDPOINT + "/{toFollowUserID}")
-    suspend fun followUser(@Path("toFollowUserID") toFollowUserID: UUID, @Body thisUserId: UUID): FollowResponse
+    suspend fun followUser(
+        @Path("toFollowUserID") toFollowUserID: UUID,
+        @Body thisUserId: UUID
+    ): FollowResponse
 
     @DELETE(Api.FOLLOWS_ENDPOINT + "{toDeleteUserID}")
-    suspend fun unfollowUser(@Path("toDeleteUserID") toDeleteUserID: UUID, @Body thisUserId: UUID): UnfollowResponse
+    suspend fun unfollowUser(
+        @Path("toDeleteUserID") toDeleteUserID: UUID,
+        @Body thisUserId: UUID
+    ): UnfollowResponse
 }

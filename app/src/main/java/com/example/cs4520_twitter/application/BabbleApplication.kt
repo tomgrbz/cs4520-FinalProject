@@ -5,7 +5,7 @@ import android.app.Application
 
 /**
  * Custom application instance that holds onto a app container object for dependency injection
- * and instantiation of local and remote sources for the ProductRepository
+ * and instantiation of local and remote sources
  */
 class BabbleApplication : Application() {
     val appContainer: AppContainer = AppContainer()
