@@ -15,18 +15,22 @@ interface UserProfileDao {
     /**
      * Gets profile with given user id (UUID as string)
      */
-    @Query("SELECT * FROM user_profiles WHERE user_id = :userID")
+    @Query("SELECT * FROM user_profiles WHERE user_userID = :userID")
     suspend fun getUserProfileById(userID: String): UserProfileEntity?
 
     /**
      * Updates user profile with given userID, editing the description
      */
-    @Query("UPDATE user_profiles SET description = :description WHERE user_id = :userID")
+    @Query("UPDATE user_profiles SET description = :description WHERE user_userID = :userID")
     suspend fun updateDescriptionByUserID(userID: String, description: String)
 
     /**
      * Updates user profile with given userID, editing the following count and following list
      */
-    @Query("UPDATE user_profiles SET followingList = :followingList, followingCount = :followingCount WHERE user_id = :userID")
-    suspend fun updateFollowingListByUserID(userID: String, followingList: List<UserEntity>, followingCount: Int)
+    @Query("UPDATE user_profiles SET followingList = :followingList, followingCount = :followingCount WHERE user_userID = :userID")
+    suspend fun updateFollowingListByUserID(
+        userID: String,
+        followingList: List<UserEntity>,
+        followingCount: Int
+    )
 }
