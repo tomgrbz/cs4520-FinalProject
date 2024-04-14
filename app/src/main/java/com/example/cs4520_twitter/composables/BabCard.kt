@@ -36,6 +36,7 @@ import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerPink
+import java.text.DateFormat
 
 // Bab card for Bab list. Currently Uses dummy data for the Image URL.
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -107,7 +108,7 @@ fun BabCard(bab : BabEntity) {
                     })
 
                 // Display Date
-                Text("Date: " + bab.date.toString(),
+                Text("Date: " + android.text.format.DateFormat.format("MMM. dd, yyyy", bab.date),
                     color = blue,
                     fontSize = 14.sp,
                     modifier = Modifier.constrainAs(date) {
