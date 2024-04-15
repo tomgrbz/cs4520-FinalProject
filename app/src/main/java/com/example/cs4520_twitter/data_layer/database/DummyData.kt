@@ -16,7 +16,7 @@ val dummyProfile = UserProfileEntity(id = 0,
     followingList = mutableListOf<UserEntity>(),
     babCount = 5)
 val dummyBab = BabEntity(
-    id = 0,
+    babID = 0,
     authorUser = dummyUser,
     content = "I made a post!",
     date = SimpleDateFormat("yyyy-MM-dd").parse("2024-04-07"),
