@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter.search
+package com.example.cs4520_twitter.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cs4520_twitter.R
+import com.example.cs4520_twitter.data_layer.database.BabEntity
+import com.example.cs4520_twitter.data_layer.database.dummyBab
+import com.example.cs4520_twitter.vms.SearchScreenViewModel
 
 @Composable
 @Preview(showBackground = true)
@@ -90,13 +94,19 @@ fun SearchScreen() {
                         )
                     }
                 )
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(0.dp),
-                ) {
-
-                }
-            }
         }
+        // List of Babs
+        val dummyBabList = listOf<BabEntity>(dummyBab)
+        LazyColumn(userScrollEnabled = true,
+            modifier = Modifier
+        ) {
+            items(
+                count = dummyBabList.size,
+                itemContent = { index ->
+                    BabCard(dummyBabList[index])
+                }
+            )
+        }
+
+    }
 }

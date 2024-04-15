@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter.search
+package com.example.cs4520_twitter.vms
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

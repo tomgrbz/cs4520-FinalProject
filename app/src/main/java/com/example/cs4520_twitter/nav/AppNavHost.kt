@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.cs4520_twitter.search.SearchScreen
+import com.example.cs4520_twitter.composables.SearchScreen
 import com.example.cs4520_twitter.composables.LoginScreen
 import com.example.cs4520_twitter.composables.UserProfileScreen
 
