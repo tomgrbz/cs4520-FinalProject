@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter.following
+package com.example.cs4520_twitter.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,12 +40,13 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
+import com.example.cs4520_twitter.vms.FollowingScreenViewModel
 import com.example.cs4520_twitter.ui.theme.blue
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun FollowingScreen(profile: UserProfileEntity) {
-    val viewModel: FollowingScreenViewModel = viewModel()
+    val viewModel: FollowingScreenViewModel = viewModel() // TODO factory
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
 
@@ -58,9 +60,10 @@ fun FollowingScreen(profile: UserProfileEntity) {
                 ),
                 title = {
                     Column() {
-                        Text("get-username",
+                        Text(profile.user.username,
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .testTag("profile_header"),
                             textAlign = TextAlign.Center)
                         Text(text = "Following",
                             Modifier.fillMaxWidth(),
@@ -78,15 +81,16 @@ fun FollowingScreen(profile: UserProfileEntity) {
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {items(
-            count = viewModel.following.size,
+            count = profile.followingCount,
             itemContent = { index ->
-                val followedUser = viewModel.following[index]
+                val followedUser = profile.followingList[index]
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
                             PaddingValues(10.dp, 10.dp, 10.dp, 0.dp)
-                        ),
+                        )
+                        .testTag("following_card"),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White
                     ),

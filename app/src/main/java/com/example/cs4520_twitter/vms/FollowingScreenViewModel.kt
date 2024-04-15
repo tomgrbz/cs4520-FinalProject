@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter.following
+package com.example.cs4520_twitter.vms
 
 import androidx.lifecycle.ViewModel
 import com.example.cs4520_twitter.data_layer.database.UserEntity
