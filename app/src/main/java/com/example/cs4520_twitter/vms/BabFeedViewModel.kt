@@ -15,9 +15,11 @@ import kotlinx.coroutines.launch
 
 class BabFeedViewModel(private val babApi : BabApi) : ViewModel() {
 
-    var babList : List<BabEntity>? = null
+
+    private val _babList = MutableStateFlow<List<BabEntity>>(emptyList())
     private val _isLoading = MutableStateFlow<Boolean>(true)
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+    val babList: StateFlow<List<BabEntity>> get() = _babList.asStateFlow()
 
     fun fetchBabs() {
         // method for filling the bab feed
@@ -28,7 +30,7 @@ class BabFeedViewModel(private val babApi : BabApi) : ViewModel() {
             try {
                 val resp = babApi.getRandomBabs()
                 Log.i("BabFeedViewModel", "Fetched random babs.")
-                babList = resp.babs
+                _babList.value = resp.babs
 
             } catch (e: Exception) {
                 Log.e("BabFeedViewModel", "Failed to fetch resp due to $e")

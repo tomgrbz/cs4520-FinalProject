@@ -15,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -36,13 +38,7 @@ fun BabFeed() {
     val viewModel: BabFeedViewModel = viewModel(factory = BabFeedViewModel.Factory)
 
     viewModel.fetchBabs() // fetching babs
-    var babs = viewModel.babList
-    val numBabs = babs?.size
-    Log.i("BabFeed", "Fetched $numBabs random babs")
-
-    if (babs == null) { // TODO: My issue is here, this is always null
-        babs = dummyBabList
-    }
+    val babs by viewModel.babList.collectAsState()
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
