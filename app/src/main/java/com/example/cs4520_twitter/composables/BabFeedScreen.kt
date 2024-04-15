@@ -1,5 +1,6 @@
 package com.example.cs4520_twitter.composables
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,8 +21,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cs4520_twitter.data_layer.database.dummyBabList
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
+import com.example.cs4520_twitter.vms.BabFeedViewModel
 
 // file for the BabFeed composable. Currently uses a dummy list of babs.
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +33,17 @@ import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 fun BabFeed() {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
-    val maxWidth = configuration.screenWidthDp
+    val viewModel: BabFeedViewModel = viewModel(factory = BabFeedViewModel.Factory)
+
+    viewModel.fetchBabs() // fetching babs
+    var babs = viewModel.babList
+    val numBabs = babs?.size
+    Log.i("BabFeed", "Fetched $numBabs random babs")
+
+    if (babs == null) { // TODO: My issue is here, this is always null
+        babs = dummyBabList
+    }
+
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
@@ -54,16 +67,17 @@ fun BabFeed() {
             bottomBar = {},           // navigation bar already on main
             floatingActionButton = {} // we won't use this for the feed screen
         ) { innerPadding ->
-            LazyColumn( // contains the list of Babs. TODO: Have API fetch random babs to display, remove dummy bab list
+            LazyColumn( // contains the list of Babs. TODO: Have API fetch random babs to display
                 modifier = Modifier
                     .padding(innerPadding)
                     .height((maxHeight * 0.8).dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp),
-            ) {items(
-                count = dummyBabList.size,
-                itemContent = { index ->
-                    BabCard(dummyBabList[index])
-                })
+            ) {
+                items(
+                    count = babs.size,
+                    itemContent = { index ->
+                        BabCard(babs[index])
+                    })
             }
         }
     }
