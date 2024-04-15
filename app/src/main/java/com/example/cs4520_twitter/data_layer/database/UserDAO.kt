@@ -13,7 +13,7 @@ interface UserDAO {
     /**
      * Gets user object with given user id (UUID as string)
      */
-    @Query("SELECT * FROM users WHERE id = :userID")
+    @Query("SELECT * FROM users WHERE userID = :userID")
     suspend fun getByUserID(userID: String): UserEntity
 
     @Insert
