@@ -1,4 +1,4 @@
-package com.example.cs4520_twitter
+package com.example.cs4520_twitter.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -32,10 +32,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.cs4520_twitter.composables.AddBabUserCard
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cs4520_twitter.data_layer.database.dummyBab
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
+import com.example.cs4520_twitter.vms.AddBabViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -44,6 +45,7 @@ fun AddBabScreen() {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
+    val viewModel : AddBabViewModel = viewModel(factory = AddBabViewModel.Factory)
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
