@@ -26,4 +26,7 @@ interface BabDao {
 
     @Query("DELETE FROM babs WHERE babID = :babId")
     suspend fun deleteById(babId: String)
+
+    @Query("SELECT * FROM babs WHERE content LIKE :searchQuery")
+    suspend fun searchBabsWithString(searchQuery: String): List<BabEntity?>
 }
