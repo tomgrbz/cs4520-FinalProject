@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +43,10 @@ import com.example.cs4520_twitter.vms.SearchScreenViewModel
 @Preview(showBackground = true)
 fun SearchScreen() {
     val viewModel: SearchScreenViewModel = viewModel()
-//    val uiState by viewModel.results
+
+    LaunchedEffect(key1 = true) {
+        viewModel
+    }
 
     var searchInput by remember { mutableStateOf("") }
     val configuration = LocalConfiguration.current
@@ -86,7 +91,8 @@ fun SearchScreen() {
                     modifier = Modifier
                         .padding(5.dp)
                         .size(40.dp)
-                        .background(Color(0xFFB9C1F1), RoundedCornerShape(15.dp)),
+                        .background(Color(0xFFB9C1F1), RoundedCornerShape(15.dp))
+                        .testTag("search_button"),
                     content = {
                         Icon(
                             painter = painterResource(id = R.drawable.search_icon),
