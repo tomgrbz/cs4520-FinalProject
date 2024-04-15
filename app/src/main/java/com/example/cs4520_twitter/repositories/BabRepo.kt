@@ -18,4 +18,3 @@ class BabRepo(private val db : AppDatabase) : BabRepository {
         return babDao.getBabById(babID)
     }
 }
-
