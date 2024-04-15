@@ -15,15 +15,15 @@ interface BabDao {
     /**
      * Get bab given specified bab id
      */
-    @Query("SELECT * FROM babs WHERE id = :babId")
+    @Query("SELECT * FROM babs WHERE babID = :babId")
     suspend fun getBabById(babId: String): BabEntity?
 
     /**
      * Gets all babs associated with given user id
      */
-    @Query("SELECT * FROM babs WHERE user_id = :userID")
+    @Query("SELECT * FROM babs WHERE user_userID = :userID")
     suspend fun getAllFromUserByUserID(userID: String): List<BabEntity?>
 
-    @Query("DELETE FROM babs WHERE id = :babId")
+    @Query("DELETE FROM babs WHERE babID = :babId")
     suspend fun deleteById(babId: String)
 }
