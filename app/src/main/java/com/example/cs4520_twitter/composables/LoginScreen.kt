@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,9 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerBlue
+import com.example.cs4520_twitter.vms.LoginViewModel
 
 @Preview(showBackground = true)
 @Composable
@@ -40,8 +44,14 @@ fun LoginScreen() {
     val configuration = LocalConfiguration.current // for obtaining screen dimensions
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
+    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 
-    Box(modifier = with (Modifier) {
+    // Use to show a loading animation while making api calls
+    val isLoading by viewModel.isLoading.collectAsState()
+
+
+
+    Box(modifier = with(Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
     {
@@ -67,7 +77,7 @@ fun LoginScreen() {
                         top.linkTo(parent.top, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = ((maxWidth - titleFontSize * 3)/2).dp // center text
+                            margin = ((maxWidth - titleFontSize * 3) / 2).dp // center text
                         )
                     })
 
@@ -80,9 +90,10 @@ fun LoginScreen() {
                     Color.Black,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor =  Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent),
+                    disabledIndicatorColor = Color.Transparent
+                ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text("Please enter username", color = blue)
@@ -94,7 +105,8 @@ fun LoginScreen() {
                         top.linkTo(babbleTitle.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = (maxWidth/2 - 250/2).dp)
+                            margin = (maxWidth / 2 - 250 / 2).dp
+                        )
                     })
 
             // password text field
@@ -106,9 +118,10 @@ fun LoginScreen() {
                     Color.Black,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor =  Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent),
+                    disabledIndicatorColor = Color.Transparent
+                ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text("Please enter password", color = blue)
@@ -121,12 +134,18 @@ fun LoginScreen() {
                         top.linkTo(username.bottom, margin = (maxHeight * 0.05).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = (maxWidth/2 - 250/2).dp)
+                            margin = (maxWidth / 2 - 250 / 2).dp
+                        )
                     })
 
             // Button for login
             Button(
-                onClick = {}, // TODO: button functionality
+                onClick = {
+                    viewModel.login(
+                        usernameText,
+                        passwordText
+                    )
+                }, // TODO: button functionality
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -134,11 +153,15 @@ fun LoginScreen() {
                         top.linkTo(password.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = (maxWidth/2 - 110/2).dp)
+                            margin = (maxWidth / 2 - 110 / 2).dp
+                        )
                     },
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(2.dp, blue),
-                colors = ButtonDefaults.buttonColors(contentColor = blue, containerColor = Color.White)
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = blue,
+                    containerColor = Color.White
+                )
             ) {
                 Text(
                     text = "Login",
@@ -158,7 +181,8 @@ fun LoginScreen() {
                         top.linkTo(loginButton.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
                             parent.absoluteLeft,
-                            margin = 25.dp)
+                            margin = 25.dp
+                        )
                     })
         }
     }

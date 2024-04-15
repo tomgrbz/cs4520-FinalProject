@@ -37,6 +37,8 @@ import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerPink
 
+import java.text.DateFormat
+
 // Bab card for Bab list. Currently Uses dummy data for the Image URL.
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
