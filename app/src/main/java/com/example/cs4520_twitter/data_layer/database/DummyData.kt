@@ -23,3 +23,4 @@ val dummyBab = BabEntity(
     likes = 3,
     likedUserList = mutableListOf(dummyUsername))
 val dummyImageURL = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg"
+val dummyBabList = mutableListOf(dummyBab, dummyBab, dummyBab, dummyBab, dummyBab)
