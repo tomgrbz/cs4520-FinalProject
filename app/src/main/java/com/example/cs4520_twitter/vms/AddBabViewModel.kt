@@ -42,18 +42,16 @@ class AddBabViewModel(private val babApi: BabApi,
         }
     }
 
-    fun addBab(babContent : String) {
-        // the api currently doesn't have a method for adding a bab, but this was also
-        // something we had not planned in the initial project proposal
+    fun addBabForLoggedInUser(babContent : String) {
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
-//        viewModelScope.launch {
-//            try {
-//                val resp = babApi.addBab(loggedUUID, babContent)
-//                Log.i("AddBabViewModel", "Added a bab response " + resp)
-//            } catch (e: Exception) {
-//                Log.e("AddBabViewModel", "Failed to add a bab resp $e")
-//            }
-//        }
+        viewModelScope.launch {
+            try {
+                val resp = babApi.addBab(loggedUUID, babContent)
+                Log.i("AddBabViewModel", "Added a bab response " + resp)
+            } catch (e: Exception) {
+                Log.e("AddBabViewModel", "Failed to add a bab resp $e")
+            }
+        }
     }
 
     companion object {

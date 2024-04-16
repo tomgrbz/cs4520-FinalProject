@@ -27,12 +27,14 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data_layer.database.BabEntity
+import com.example.cs4520_twitter.data_layer.database.UserEntity
+import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.ui.theme.blue
 
 // Add a Bab User card to go over the bab text field. This does not have any planned functionality
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun AddBabUserCard(bab: BabEntity) {
+fun AddBabUserCard(user: UserEntity) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
@@ -53,7 +55,7 @@ fun AddBabUserCard(bab: BabEntity) {
                 val (username, userIcon) = createRefs() // references
                 // this is the icon image
                 GlideImage(
-                    model = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg",
+                    model = dummyImageURL,
                     contentScale = ContentScale.Crop,
                     loading = placeholder(ColorPainter(Color.White)),
                     failure = placeholder(ColorPainter(Color.White)),
@@ -79,7 +81,7 @@ fun AddBabUserCard(bab: BabEntity) {
                             )
                         })
                 // The logged in user's name
-                Text("@" + bab.authorUser.username,
+                Text("@" + user.username,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.constrainAs(username) {

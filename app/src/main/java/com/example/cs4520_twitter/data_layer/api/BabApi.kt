@@ -1,5 +1,6 @@
 package com.example.cs4520_twitter.data_layer.api
 
+import com.example.cs4520_twitter.data_layer.api.models.AddBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.DeleteBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.LikesResponse
 import com.example.cs4520_twitter.data_layer.api.models.RandomBabsResponse
@@ -20,4 +21,8 @@ interface BabApi {
 
     @GET(Api.BABS_ENDPOINT)
     suspend fun getRandomBabs(): RandomBabsResponse
+
+    @POST(Api.BABS_ENDPOINT + "/{userID}")
+    suspend fun addBab(@Path("userID") userID: UUID, @Body content: String): AddBabResponse
+
 }

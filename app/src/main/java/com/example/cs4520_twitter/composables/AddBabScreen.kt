@@ -20,6 +20,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.cs4520_twitter.data_layer.database.dummyBab
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.vms.AddBabViewModel
@@ -46,6 +46,10 @@ fun AddBabScreen() {
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
     val viewModel : AddBabViewModel = viewModel(factory = AddBabViewModel.Factory)
+
+    viewModel.fetchLoggedInUserProfile() // first fetching the logged in user
+
+    val userProfile = viewModel.loggedInProfile.collectAsState()
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -77,17 +81,18 @@ fun AddBabScreen() {
                 val (userCard, // Display the logged in user card
                     textField, // text field for writing new Bab
                     addBabButton) = createRefs()
-                Box(modifier = Modifier.constrainAs(userCard) {
+                var babText by remember { mutableStateOf("") }
+
+                Box(modifier = Modifier.constrainAs(userCard) {// Box for displaying user card
                     top.linkTo(parent.top, margin = (maxWidth * 0.05).dp)
                     absoluteLeft.linkTo(
                         parent.absoluteLeft,
                         margin = (maxWidth/2 - (maxWidth * 0.9)/2).dp)
                 }) {
-                    AddBabUserCard(dummyBab)
+                    AddBabUserCard(userProfile.value.user)
                 }
 
                 // Enter a new Bab text field
-                var babText by remember { mutableStateOf("") }
                 TextField(
                     value = babText,
                     onValueChange = { babText = it },
@@ -110,20 +115,27 @@ fun AddBabScreen() {
                             top.linkTo(userCard.bottom, margin = (maxHeight * 0.03).dp)
                             absoluteLeft.linkTo(
                                 parent.absoluteLeft,
-                                margin = (maxWidth/2 - (maxWidth * 0.85)/2).dp)
+                                margin = (maxWidth / 2 - (maxWidth * 0.85) / 2).dp
+                            )
                         })
 
                 // Button to add a bab
                 Button(
-                    onClick = {},
+                    onClick = {
+                              if (babText.isNotBlank()) { // as long as text isn't blank, add the new bab
+                                  viewModel.addBabForLoggedInUser(babText) // add bab
+                                  babText = "" // reset text field
+                              }
+                    },
                     modifier = Modifier
                         .height(40.dp)
                         .width(110.dp)
                         .constrainAs(addBabButton) {
-                            top.linkTo(textField.bottom, margin = (maxHeight/20).dp)
+                            top.linkTo(textField.bottom, margin = (maxHeight / 20).dp)
                             absoluteLeft.linkTo(
                                 parent.absoluteLeft,
-                                margin = (maxWidth/2 - 110/2).dp)
+                                margin = (maxWidth / 2 - 110 / 2).dp
+                            )
                         },
                     contentPadding = PaddingValues(0.dp),
                     border = BorderStroke(2.dp, blue),
