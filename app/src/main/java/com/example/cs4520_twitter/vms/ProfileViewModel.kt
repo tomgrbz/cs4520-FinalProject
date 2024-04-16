@@ -8,8 +8,11 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.cs4520_twitter.app_state.LoggedInUser
 import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.BabApi
+import com.example.cs4520_twitter.data_layer.api.LoginApi
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
 import com.example.cs4520_twitter.data_layer.api.UsersApi
+import com.example.cs4520_twitter.data_layer.api.models.CredentialsPostRequest
+import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
@@ -20,16 +23,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class AddBabViewModel(private val babApi: BabApi,
-                      private val profileApi: ProfilesApi) : ViewModel() {
+class ProfileViewModel(val profileApi : ProfilesApi,
+                       val userApi : UsersApi) : ViewModel() {
+
     private val _isLoading = MutableStateFlow<Boolean>(true);
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+
+    private val _babList = MutableStateFlow<List<BabEntity>>(emptyList()) // babs of logged in user
+    val babList: StateFlow<List<BabEntity>> get() = _babList.asStateFlow()
 
     private val _loggedInProfile = MutableStateFlow<UserProfileEntity>(dummyProfile) // logged in profile
     val loggedInProfile: StateFlow<UserProfileEntity> get() = _loggedInProfile.asStateFlow()
 
-    fun fetchLoggedInUserProfile() { // as a workaround, I think I can just grab the user's profile and their user entity from there
+    fun fetchLoggedInUserProfile() {
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
+
         viewModelScope.launch {
             try {
                 val resp = profileApi.getUserProfile(loggedUUID)
@@ -42,18 +50,19 @@ class AddBabViewModel(private val babApi: BabApi,
         }
     }
 
-    fun addBab(babContent : String) {
-        // the api currently doesn't have a method for adding a bab, but this was also
-        // something we had not planned in the initial project proposal
+    fun fetchLoggedInUserBabs() {
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
-//        viewModelScope.launch {
-//            try {
-//                val resp = babApi.addBab(loggedUUID, babContent)
-//                Log.i("AddBabViewModel", "Added a bab response " + resp)
-//            } catch (e: Exception) {
-//                Log.e("AddBabViewModel", "Failed to add a bab resp $e")
-//            }
-//        }
+        _isLoading.value = true
+
+        viewModelScope.launch {
+            try {
+                val resp = userApi.getUserBabs(loggedUUID)
+                Log.i("ProfileViewModel", "Obtained logged in user babs " + LoggedInUser.loggedInUserId)
+                _babList.value = resp.babs
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Failed to fetch resp due to $e")
+            }
+        }
     }
 
     companion object {
@@ -63,8 +72,8 @@ class AddBabViewModel(private val babApi: BabApi,
 
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return AddBabViewModel((application as BabbleApplication).appContainer.babsService,
-                    application.appContainer.profilesApiService) as T
+                return ProfileViewModel((application as BabbleApplication).appContainer.profilesApiService,
+                    (application as BabbleApplication).appContainer.usersApiService) as T
             }
         }
     }

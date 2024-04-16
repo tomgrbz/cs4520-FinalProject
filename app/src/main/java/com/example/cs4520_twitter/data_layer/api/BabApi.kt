@@ -20,5 +20,4 @@ interface BabApi {
 
     @GET(Api.BABS_ENDPOINT)
     suspend fun getRandomBabs(): RandomBabsResponse
-
 }
