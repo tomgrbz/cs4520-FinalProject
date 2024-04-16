@@ -35,9 +35,6 @@ class ProfileViewModel(val profileApi : ProfilesApi,
     private val _loggedInProfile = MutableStateFlow<UserProfileEntity>(dummyProfile) // logged in profile
     val loggedInProfile: StateFlow<UserProfileEntity> get() = _loggedInProfile.asStateFlow()
 
-    private val _loggedInUser = MutableStateFlow<UserEntity>(dummyUser) // logged in profile
-    val loggedInUser: StateFlow<UserEntity> get() = _loggedInUser.asStateFlow()
-
     fun fetchLoggedInUserProfile() {
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
 

@@ -1,5 +1,6 @@
 package com.example.cs4520_twitter.composables
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,22 +54,16 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
-
-    val viewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
-    viewModel.fetchLoggedInUserProfile()
-    viewModel.fetchLoggedInUserBabs()
-
-    val user by viewModel.loggedInUser.collectAsState()
-    val babs by viewModel.babList.collectAsState()                // babs of this user profile
-    val userProfile by viewModel.loggedInProfile.collectAsState() // user profile
-
-    val profileFollowerCount = userProfile.followerCount
-    val profileFollowingCount = userProfile.followingCount
-    val profileBabCount = userProfile.babCount
-
     val usernameSize = 20 // hardcoded dim.'s
     val dataTextSize = 14
     val iconDim = maxWidth * 0.30 // around a third of the screen width
+
+    val viewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
+    viewModel.fetchLoggedInUserProfile() // fetch user profile
+    viewModel.fetchLoggedInUserBabs()    // fetch babs
+
+    val babs by viewModel.babList.collectAsState()                // babs of this user profile
+    val userProfile by viewModel.loggedInProfile.collectAsState() // user profile
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -125,20 +120,24 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
 
             // Username text
-            Text(user.username, // TODO: Should the user api have a method to retrieve a user by id?
-                // textAlign = TextAlign.Center,
+            // Text(userProfile.user.username, // TODO: Issue is commented out here, the username may be null according to the error I get
+            Log.e("ProfileScreen", "profile user is: " + userProfile.user.toString()) //in the logs, it says the user is null
+            Text(
+                dummyUsername,
                 fontSize = usernameSize.sp,
                 modifier = Modifier
                     .constrainAs(username) {
                         top.linkTo(userIcon.bottom, margin = (5).dp)
                         absoluteLeft.linkTo(
                             userBanner.absoluteLeft,
-                            margin = (maxWidth / 2 - (user.username.length
+                           // margin = (maxWidth / 2 - (userProfile.user.username.length
+                            margin = (maxWidth / 2 - (dummyUsername.length
                                     * (usernameSize / 2)) / 2).dp
                         )
                     })
 
             // Num. of Followers text
+            val profileFollowerCount = userProfile.followerCount
             Text(
                 "Followers: $profileFollowerCount",
                 color = blue,
@@ -153,6 +152,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
 
             // Num. of Following text
+            val profileFollowingCount = userProfile.followingCount
             Text(
                 "Following: $profileFollowingCount",
                 color = blue,
@@ -167,6 +167,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
 
             // Num. of Posts text
+            val profileBabCount = userProfile.babCount
             Text(
                 "Babs: $profileBabCount",
                 color = blue,
