@@ -6,8 +6,8 @@ Add A Bab Screen:
 - Attempting to add a bab, I get error:
 
 
-![img.png](img.png)
+![img.png](Navigating_to_add_screen.png)
 
-![img_1.png](img_1.png)
+![img_1.png](error.png)
 
-![img_2.png](img_2.png)
+![img_2.png](example.png)
