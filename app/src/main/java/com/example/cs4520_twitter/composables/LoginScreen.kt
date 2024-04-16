@@ -50,7 +50,6 @@ fun LoginScreen() {
     val isLoading by viewModel.isLoading.collectAsState()
 
 
-
     Box(modifier = with(Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })

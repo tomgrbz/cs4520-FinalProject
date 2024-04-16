@@ -1,12 +1,13 @@
 
-Some comments for reading ProfileScreen.kt
+Some comments
 -----------------------------------------
 
-- After pulling from main, MainActivity shouldn't have conflicts now, I think. I added both ProfileScreen and LoginScreen to NavHost.
-- Now, when running the app, the login screen gets displayed first with the nav bar at the bottom. You can also navigate to profile screen now using the nav bar.
-- I created a new resource folder for composables, so the Bab card, ProfileScreen, and LoginScreen should be there now.
-- Also deleted the old datatypes for Thomas' datatypes.
+- Can I add a method to the User API to retrieve a user?
+- To use the app: please first log in with valid credentials to access the profile screen.
+- I think there may be an issue with the "testuser" user's userID (it's 123). I get an error at line "UUID.fromString(LoggedInUser.loggedInUserId)" saying that testuser has an invalid UUID string after logging in and navigating to the profile.
+- But I can log in with users like 'ben10' and '#1pokemonfan' and I can navigate to profile which loads correctly (aside from the banner username, but I need an api method to retrieve a user).
+- I also think there may be an issue with the image URL's from the API's users, it gives me res/bear when I obtain it
 
-![Alt text](profile_screen_photo.png)
+![Alt text](example_login.png)
 
-![Alt text](opening_screen.png)
+![Alt text](uuid_error_for_testuser.png)

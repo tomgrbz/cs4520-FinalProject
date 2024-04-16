@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,16 +33,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
-import com.example.cs4520_twitter.data_layer.database.dummyBab
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
 import com.example.cs4520_twitter.data_layer.database.dummyUsername
+import com.example.cs4520_twitter.vms.ProfileViewModel
 
 // File contains screen composable. Dummy data is imported from the database folder.
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -51,13 +53,22 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
-    val dummyFollowerCount = profile.followerCount
-    val dummyFollowingCount = profile.followingCount
-    val dummyBabCount = profile.babCount
+
+    val viewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
+    viewModel.fetchLoggedInUserProfile()
+    viewModel.fetchLoggedInUserBabs()
+
+    val user by viewModel.loggedInUser.collectAsState()
+    val babs by viewModel.babList.collectAsState()                // babs of this user profile
+    val userProfile by viewModel.loggedInProfile.collectAsState() // user profile
+
+    val profileFollowerCount = userProfile.followerCount
+    val profileFollowingCount = userProfile.followingCount
+    val profileBabCount = userProfile.babCount
+
     val usernameSize = 20 // hardcoded dim.'s
     val dataTextSize = 14
     val iconDim = maxWidth * 0.30 // around a third of the screen width
-    val dummyBabList = mutableListOf(dummyBab, dummyBab, dummyBab, dummyBab, dummyBab)
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -76,7 +87,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                 babColumn          // list of THIS user's babs
             ) = createRefs()
 
-            var userDescText by remember { mutableStateOf("Hello!") }
+            var userDescText by remember { mutableStateOf(userProfile.description) }
 
             Box(modifier = Modifier // this is the white banner, has the screen's width
                 .fillMaxWidth()
@@ -114,7 +125,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
 
             // Username text
-            Text(dummyUsername,
+            Text(user.username, // TODO: Should the user api have a method to retrieve a user by id?
                 // textAlign = TextAlign.Center,
                 fontSize = usernameSize.sp,
                 modifier = Modifier
@@ -122,14 +133,14 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                         top.linkTo(userIcon.bottom, margin = (5).dp)
                         absoluteLeft.linkTo(
                             userBanner.absoluteLeft,
-                            margin = (maxWidth / 2 - (dummyUsername.length
+                            margin = (maxWidth / 2 - (user.username.length
                                     * (usernameSize / 2)) / 2).dp
                         )
                     })
 
             // Num. of Followers text
             Text(
-                "Followers: $dummyFollowerCount",
+                "Followers: $profileFollowerCount",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -143,7 +154,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
 
             // Num. of Following text
             Text(
-                "Following: $dummyFollowingCount",
+                "Following: $profileFollowingCount",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -157,7 +168,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
 
             // Num. of Posts text
             Text(
-                "Babs: $dummyBabCount",
+                "Babs: $profileBabCount",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -183,7 +194,8 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     },
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(2.dp, blue),
-                colors = ButtonDefaults.buttonColors(contentColor = blue, containerColor = Color.White)
+                colors = ButtonDefaults.buttonColors(contentColor = blue,
+                    containerColor = Color.White)
             ) {
                 Text(
                     text = "Edit",
@@ -205,7 +217,8 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     },
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(2.dp, blue),
-                colors = ButtonDefaults.buttonColors(contentColor = blue, containerColor = Color.White)
+                colors = ButtonDefaults.buttonColors(contentColor = blue,
+                    containerColor = Color.White)
             ) {
                 Text(
                     text = "My Followers",
@@ -244,12 +257,15 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     .width((maxWidth * 0.95).dp)  // most of the screen width
                     .constrainAs(babColumn) {
                         top.linkTo(userBanner.bottom, margin = 10.dp)
-                        absoluteLeft.linkTo(parent.absoluteLeft, margin = ((maxWidth * 0.05)/2).dp)
+                        absoluteLeft.linkTo(
+                            parent.absoluteLeft,
+                            margin = ((maxWidth * 0.05) / 2).dp
+                        )
                     }) {
                 items(
-                    count = dummyBabList.size,
+                    count = babs.size,
                     itemContent = { index ->
-                        BabCard(dummyBabList[index])
+                        BabCard(babs[index])
                     }
                 )
             }
