@@ -120,18 +120,16 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
 
             // Username text
-            // Text(userProfile.user.username, // TODO: Issue is commented out here, the username may be null according to the error I get
-            Log.e("ProfileScreen", "profile user is: " + userProfile.user.toString()) //in the logs, it says the user is null
+            Log.i("ProfileScreen", "profile user is: " + userProfile.user.toString())
             Text(
-                dummyUsername,
+                userProfile.user.username,  // TODO: Error is here according to logs, for newly registered users, profile is fetched as null
                 fontSize = usernameSize.sp,
                 modifier = Modifier
                     .constrainAs(username) {
                         top.linkTo(userIcon.bottom, margin = (5).dp)
                         absoluteLeft.linkTo(
                             userBanner.absoluteLeft,
-                           // margin = (maxWidth / 2 - (userProfile.user.username.length
-                            margin = (maxWidth / 2 - (dummyUsername.length
+                            margin = (maxWidth / 2 - (userProfile.user.username.length // TODO: Error is here according to logs
                                     * (usernameSize / 2)) / 2).dp
                         )
                     })
