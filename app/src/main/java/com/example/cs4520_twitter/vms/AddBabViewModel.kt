@@ -10,6 +10,7 @@ import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.BabApi
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
 import com.example.cs4520_twitter.data_layer.api.UsersApi
+import com.example.cs4520_twitter.data_layer.api.models.AddBabRequest
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
@@ -46,7 +47,8 @@ class AddBabViewModel(private val babApi: BabApi,
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
         viewModelScope.launch {
             try {
-                val resp = babApi.addBab(loggedUUID, babContent)
+                Log.i("AddBabViewModel", "Given login uuid is: $loggedUUID" )
+                val resp = babApi.addBab(loggedUUID, AddBabRequest( babContent))
                 Log.i("AddBabViewModel", "Added a bab response " + resp)
             } catch (e: Exception) {
                 Log.e("AddBabViewModel", "Failed to add a bab resp $e")
