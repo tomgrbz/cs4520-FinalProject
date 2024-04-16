@@ -41,8 +41,9 @@ class ProfileViewModel(val profileApi : ProfilesApi,
         viewModelScope.launch {
             try {
                 val resp = profileApi.getUserProfile(loggedUUID)
-                Log.i("ProfileViewModel", "Obtained logged in user profile " + LoggedInUser.loggedInUserId)
-                _loggedInProfile.value = resp
+                Log.i("ProfileViewModel", "Obtained logged in user profile " + resp)
+
+                _loggedInProfile.value = resp.profile
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Failed to fetch resp due to $e")
             }
