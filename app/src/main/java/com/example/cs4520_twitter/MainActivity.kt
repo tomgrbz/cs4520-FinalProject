@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.cs4520_twitter.app_state.LoggedInUser
 import com.example.cs4520_twitter.nav.AppNavHost
 import com.example.cs4520_twitter.nav.NavBar
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
@@ -23,8 +24,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 val navController = rememberNavController()
-                Scaffold(bottomBar = {
-                    NavBar(navController)
+                Scaffold(bottomBar = { 
+                    NavBar(navController = navController)
                 }) {
                     Box(modifier = with (Modifier) {
                         fillMaxSize().background(backgroundBrushBlueYellowTheme)

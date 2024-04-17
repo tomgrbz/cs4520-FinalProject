@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +43,7 @@ import java.text.DateFormat
 // Bab card for Bab list. Currently Uses dummy data for the Image URL.
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun BabCard(bab : BabEntity) {
+fun BabCard(bab : BabEntity, editMode: Boolean = false) {
     val configuration = LocalConfiguration.current // for screen dimensions
     val maxHeight = configuration.screenHeightDp
     Card(modifier = Modifier
@@ -54,8 +56,10 @@ fun BabCard(bab : BabEntity) {
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
-            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight * 0.2).dp)) {
-                val (date, username, content, likes, userIcon, heart) = createRefs()
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight * 0.2).dp)) {
+                val (date, username, content, deleteBtn, likes, userIcon, heart) = createRefs()
                 GlideImage( // this is the icon image of the user who babbled
                     model = dummyImageURL,
                     contentScale = ContentScale.Crop,
@@ -92,6 +96,20 @@ fun BabCard(bab : BabEntity) {
                         absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
                     })
 
+                if (editMode) {
+                    IconButton(onClick = { /*TODO*/ },
+                        modifier = Modifier.constrainAs(deleteBtn) {
+                            top.linkTo(parent.top, margin = 5.dp)
+                            absoluteRight.linkTo(parent.absoluteRight, margin = 5.dp)
+                        },
+                    ) {
+                        Icon(Icons.Filled.Close,
+                            "delete bab",
+                            Modifier.size(25.dp),
+                            Color.Red,
+                        )
+                    }
+                }
                 // display bab text
                 Text(bab.content, modifier = Modifier.constrainAs(content) {
                     top.linkTo(username.bottom)

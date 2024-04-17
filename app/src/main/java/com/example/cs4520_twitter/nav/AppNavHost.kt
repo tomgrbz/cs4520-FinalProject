@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.cs4520_twitter.composables.BabFeed
+import com.example.cs4520_twitter.composables.EditProfileScreen
 import com.example.cs4520_twitter.composables.LoginScreen
 import com.example.cs4520_twitter.composables.UserProfileScreen
 
@@ -48,10 +49,9 @@ fun AppNavHost(
             UserProfileScreen() // currently uses dummy data
         }
         composable(NavigationItem.EditProfile.route) {
-//            LoginScreen(navController)
+            EditProfileScreen()
         }
         composable(NavigationItem.Search.route) {
-//            LoginScreen(navController)
         }
         composable(NavigationItem.Followers.route) {
 //            LoginScreen(navController)
