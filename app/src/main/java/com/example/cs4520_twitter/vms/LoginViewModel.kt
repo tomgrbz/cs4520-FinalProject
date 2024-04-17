@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class LoginViewModel(private val loginApi: LoginApi,
                      private val signupApi : SignupApi) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow<Boolean>(true);
+    private val _isLoading = MutableStateFlow<Boolean>(false);
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
 
     fun login(username: String, password: String) {
@@ -30,11 +30,13 @@ class LoginViewModel(private val loginApi: LoginApi,
         viewModelScope.launch {
             try {
                 val resp = loginApi.login(CredentialsPostRequest(username, password))
-                Log.i("LoginViewModel", "Logged in $resp")
+
                 LoggedInUser.loggedInUserId = resp.user.userID
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Failed to fetch resp due to $e")
-
+                throw e
+            }
+            finally {
+                _isLoading.value = false
             }
         }
     }
