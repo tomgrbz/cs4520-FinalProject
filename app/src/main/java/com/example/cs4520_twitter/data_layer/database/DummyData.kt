@@ -16,10 +16,11 @@ val dummyProfile = UserProfileEntity(id = 0,
     followingList = mutableListOf<UserEntity>(),
     babCount = 5)
 val dummyBab = BabEntity(
-    id = 0,
+    babID = 0,
     authorUser = dummyUser,
     content = "I made a post!",
     date = SimpleDateFormat("yyyy-MM-dd").parse("2024-04-07"),
     likes = 3,
     likedUserList = mutableListOf(dummyUsername))
 val dummyImageURL = "https://m.media-amazon.com/images/I/31YObRg58fL._SY445_SX342_.jpg"
+val dummyBabList = mutableListOf(dummyBab, dummyBab, dummyBab, dummyBab, dummyBab)
