@@ -23,6 +23,9 @@ class LoginViewModel(private val loginApi: LoginApi,
     private val _isLoading = MutableStateFlow<Boolean>(true);
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
 
+    private val _success = MutableStateFlow<Boolean>(false);
+    val success: StateFlow<Boolean> get() = _success.asStateFlow()
+
     fun login(username: String, password: String) {
         // validate user credentials
         _isLoading.value = true
@@ -32,9 +35,9 @@ class LoginViewModel(private val loginApi: LoginApi,
                 val resp = loginApi.login(CredentialsPostRequest(username, password))
                 Log.i("LoginViewModel", "Logged in $resp")
                 LoggedInUser.loggedInUserId = resp.user.userID
+                _success.value = true
             } catch (e: Exception) {
                 Log.e("LoginViewModel", "Failed to fetch resp due to $e")
-
             }
         }
     }
@@ -49,6 +52,7 @@ class LoginViewModel(private val loginApi: LoginApi,
                     val resp = signupApi.signup(CredentialsPostRequest(username, password))
                     Log.i("LoginViewModel", "Signed up in $resp")
                     LoggedInUser.loggedInUserId = resp.user.userID // Automatically log them in?
+                    _success.value = true
                 } catch (e: Exception) {
                     Log.e("LoginViewModel", "Failed to sign up due to $e")
                 }

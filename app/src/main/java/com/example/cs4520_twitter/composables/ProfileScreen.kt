@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
@@ -44,13 +45,13 @@ import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
 import com.example.cs4520_twitter.data_layer.database.dummyUsername
+import com.example.cs4520_twitter.nav.NavigationItem
 import com.example.cs4520_twitter.vms.ProfileViewModel
 
 // File contains screen composable. Dummy data is imported from the database folder.
 @OptIn(ExperimentalGlideComposeApi::class)
-@Preview(showBackground = true)
 @Composable
-fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
+fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController: NavController) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
@@ -203,7 +204,9 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
             }
             // Button for viewing my followers
             Button(
-                onClick = {},
+                onClick = {
+                          navController.navigate(NavigationItem.Followers.route)
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
