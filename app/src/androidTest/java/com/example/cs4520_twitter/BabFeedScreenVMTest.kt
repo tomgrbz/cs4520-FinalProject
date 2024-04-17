@@ -9,46 +9,26 @@ import org.junit.Test
 var loggedInUserBabFeed = fakeUser1.userID
 @RunWith(AndroidJUnit4::class)
 class BabFeedScreenVMTest {
-    val mockProfileVM = MockProfileVM()
+    val mockFeedVM = MockBabFeedVM()
 
     @Test
-    fun testInitializedProfileVM() {
+    fun testInitializedFeedVM() {
         loggedInUserBabFeed = fakeUser1.userID
-        assertEquals(mockProfileVM.loggedUserProfile, "")
-        assertEquals(mockProfileVM.loggedUserBabs, listOf<BabEntity>())
-
-        mockProfileVM.fetchLoggedInUserProfile()
-        mockProfileVM.fetchLoggedInUserBabs()
-
-        assertEquals(mockProfileVM.loggedUserProfile, loggedInUserBabFeed)
-        assertEquals(mockProfileVM.loggedUserBabs, fakeUser1Babs)
+        assertEquals(mockFeedVM.feed, listOf<BabEntity>()) // just empty initially
     }
 
     @Test
-    fun testProfileVmWithoutLoggedUser() {
-        loggedInUserBabFeed = ""
-        mockProfileVM.fetchLoggedInUserProfile()
-        mockProfileVM.fetchLoggedInUserBabs()
-        assertEquals(mockProfileVM.loggedUserProfile, "error")
-        assertEquals(mockProfileVM.loggedUserBabs, listOf<BabEntity>())
+    fun testFetchRandomBabs() {
+        loggedInUserBabFeed = fakeUser1.userID
+        mockFeedVM.fetchRandomBabs()
+        assertEquals(mockFeedVM.feed, fakeUser1Babs) // feed has babs now
     }
 
-    class MockProfileVM() {
-        // Mock class of the profile screen VM
-        public var loggedUserProfile = ""
-        public var loggedUserBabs = listOf<BabEntity>()
-        fun fetchLoggedInUserProfile()  {
-            if (loggedInUserBabFeed.isBlank()) {
-                loggedUserProfile = "error"
-            } else { loggedUserProfile = loggedInUserBabFeed }
-        }
-
-        fun fetchLoggedInUserBabs() {
-            if (loggedInUserBabFeed.isNotBlank()) {
-                loggedUserBabs = fakeUser1Babs
-            } else {
-                listOf<BabEntity>()
-            }
+    class MockBabFeedVM() {
+        // Mock class of the bab feed screen VM
+        var feed = listOf<BabEntity>()
+        fun fetchRandomBabs() {
+            feed = fakeUser1Babs
         }
     }
 }
