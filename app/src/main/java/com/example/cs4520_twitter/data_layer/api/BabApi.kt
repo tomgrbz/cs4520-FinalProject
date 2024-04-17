@@ -18,7 +18,7 @@ interface BabApi {
     @POST(Api.BABS_ENDPOINT + "/{babID}/likes")
     suspend fun likeBab(@Path("babID") babID: Int, @Body body: UserIDBodyRequest): LikesResponse
 
-    @DELETE(Api.BABS_ENDPOINT + "/{babID}/likes")
+    @POST(Api.BABS_ENDPOINT + "/{babID}/likes")
     suspend fun unlikeBab(@Path("babID") babID: Int, @Body body: UserIDBodyRequest): LikesResponse
 
     @DELETE(Api.BABS_ENDPOINT + "/{babID}")
