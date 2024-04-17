@@ -34,7 +34,6 @@ class LoginViewModel(private val loginApi: LoginApi,
                 LoggedInUser.loggedInUserId = resp.user.userID
             } catch (e: Exception) {
                 Log.e("LoginViewModel", "Failed to fetch resp due to $e")
-
             }
         }
     }

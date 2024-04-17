@@ -8,8 +8,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.cs4520_twitter.app_state.LoggedInUser
 import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.FollowsApi
+import com.example.cs4520_twitter.data_layer.api.ProfilesApi
 import com.example.cs4520_twitter.data_layer.api.UsersApi
-import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +17,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class FollowingScreenViewModel(val followApi : FollowsApi,
-                               val userApi : UsersApi // do we need?
+class FollowingScreenViewModel(
+    private val followApi : FollowsApi,
+    private val profilesApi: ProfilesApi,
+    private val userApi : UsersApi // do we need?
 ): ViewModel() {
     private val _isLoading = MutableStateFlow<Boolean>(true);
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
@@ -29,31 +31,35 @@ class FollowingScreenViewModel(val followApi : FollowsApi,
     private val _count = MutableStateFlow<Int>(0);
     val count: StateFlow<Int> get() = _count.asStateFlow()
 
+    private val _username = MutableStateFlow<String>("")
+    val username: StateFlow<String> get() = _username.asStateFlow()
+
+    private val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
     fun unfollow(usertoUnfollowId: String) {
-        val actingUUID = UUID.fromString(LoggedInUser.loggedInUserId)
         val toUnfollowUUID = UUID.fromString(usertoUnfollowId)
 
         viewModelScope.launch {
             try {
-                val resp = followApi.unfollowUser(toUnfollowUUID, actingUUID)
+                val resp = followApi.unfollowUser(toUnfollowUUID, loggedUUID)
                 Log.i("FollowingScreenViewModel", "Successful unfollowing of $toUnfollowUUID")
+                fetchData()
             } catch (e: Exception) {
                 Log.e("FollowingScreenViewModel", "Failed to fetch resp due to $e")
             }
         }
     }
 
-    fun fetchFollowingOfUser() {
-        val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
+    fun fetchData() {
         _isLoading.value = true
 
         viewModelScope.launch {
             try {
-                val resp = userApi.getUsersFollowing(loggedUUID)
+                val resp = profilesApi.getUserProfile(loggedUUID)
                 Log.i("FollowingScreenViewModel", "Obtained logged in user following $loggedUUID")
                 _isLoading.value = false
-                _following.value = resp.following
-
+                _following.value = resp.profile.followerList
+                _count.value = resp.profile.followingCount
+                _username.value = resp.profile.user.username
             } catch (e: Exception) {
                 Log.e("FollowingScreenViewModel", "Failed to fetch resp due to $e")
             }
@@ -68,9 +74,9 @@ class FollowingScreenViewModel(val followApi : FollowsApi,
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 return FollowingScreenViewModel((application as BabbleApplication).appContainer.followsApiService,
+                    (application as BabbleApplication).appContainer.profilesApiService,
                     (application as BabbleApplication).appContainer.usersApiService) as T
             }
         }
     }
-
 }

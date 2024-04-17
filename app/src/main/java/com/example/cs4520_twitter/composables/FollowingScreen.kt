@@ -50,11 +50,13 @@ import com.example.cs4520_twitter.vms.AddBabViewModel
 @Composable
 fun FollowingScreen() {
     val viewModel : FollowingScreenViewModel = viewModel(factory = FollowingScreenViewModel.Factory)
-    viewModel.fetchFollowingOfUser() // first fetching the logged in user
+    viewModel.fetchData() // first fetching the logged in user
 
     val following = viewModel.following.collectAsState()
 
     val followingCount = viewModel.count.collectAsState()
+
+    val username = viewModel.username.collectAsState()
 
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
@@ -69,7 +71,7 @@ fun FollowingScreen() {
                 ),
                 title = {
                     Column() {
-                        Text(LoggedInUser.toString(),
+                        Text(username.value,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .testTag("profile_header"),
@@ -106,7 +108,9 @@ fun FollowingScreen() {
                     shape = RoundedCornerShape(corner = CornerSize(15.dp)),
                 ) {
                     ConstraintLayout(
-                        modifier = Modifier.fillMaxWidth().padding((maxHeight * 0.01).dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding((maxHeight * 0.01).dp),
                     ) {
                         val (image, name, btn) = createRefs()
                         GlideImage( // this is the icon image
