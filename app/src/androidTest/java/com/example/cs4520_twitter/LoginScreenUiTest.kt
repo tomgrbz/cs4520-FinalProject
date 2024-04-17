@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cs4520_twitter.composables.LoginScreen
@@ -32,7 +33,7 @@ class LoginUITest {
     }
 
     @Test
-    fun testScreenComponentsCorrectlyInitialized() { // passes
+    fun testScreenComponentsCorrectlyInitialized() { // testing general initial setup of login
         composeTestRule.onNodeWithText("Babble").assertExists()                // title of login
         composeTestRule.onNodeWithText("Please enter username").assertExists() // user field
         composeTestRule.onNodeWithText("Please enter password").assertExists() // pass field
@@ -45,7 +46,15 @@ class LoginUITest {
     }
 
     @Test
-    fun testPressedRegisterText() {
+    fun testPressedRegisterText() { // testing login when register text is pressed
+        composeTestRule.onNodeWithText("Don't have an account?\n" +            // Register text
+                "Click to sign up!").performClick()
+
+        composeTestRule.onNodeWithText("Babble").assertExists()                // title of login
+        composeTestRule.onNodeWithText("Please enter username").assertExists() // user field
+        composeTestRule.onNodeWithText("Please enter password").assertExists() // pass field
+        composeTestRule.onNodeWithText("Register").assertExists() // register button should now appear
+        composeTestRule.onNodeWithText("Already have an account?\nClick to log in!").assertExists()  // register text should appear
 
     }
 }
