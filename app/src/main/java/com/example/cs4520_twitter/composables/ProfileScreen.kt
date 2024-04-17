@@ -252,7 +252,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
             // List of Babs
             LazyColumn(userScrollEnabled = true,
                 modifier = Modifier
-                    .height((maxHeight * 0.5).dp) // half the screen
+                    .height((maxHeight * 0.45).dp) // half the screen
                     .width((maxWidth * 0.95).dp)  // most of the screen width
                     .constrainAs(babColumn) {
                         top.linkTo(userBanner.bottom, margin = 10.dp)
