@@ -15,7 +15,10 @@ import java.util.UUID
 interface BabApi {
 
     @POST(Api.BABS_ENDPOINT + "/{babID}/likes")
-    suspend fun getUserBabs(@Path("babID") babID: Int, @Body userID: UUID): LikesResponse
+    suspend fun likeBab(@Path("babID") babID: Int, @Body userID: UUID): LikesResponse
+
+    @DELETE(Api.BABS_ENDPOINT + "/{babID}/likes")
+    suspend fun unlikeBab(@Path("babID") babID: Int, @Body userID: UUID): LikesResponse
 
     @DELETE(Api.BABS_ENDPOINT + "/{babID}")
     suspend fun deleteBab(@Path("babID") babID: Int): DeleteBabResponse
