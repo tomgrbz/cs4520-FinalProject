@@ -12,9 +12,10 @@
 
 ### Registration page
 -----------------------------------------
-
 ![Alt text](registration.png)
 
+BabFeedScreen
+---------------------
 ![alt text](babble_feed_photo.png)
 
 
@@ -23,4 +24,8 @@ ProfileScreen
 
 ![Alt text](profile_screen_photo.png)
 
+
 ![Alt text](opening_screen.png)
+
+![Alt text](opening_screen.png)
+

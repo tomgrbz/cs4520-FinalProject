@@ -5,7 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+
+import com.example.cs4520_twitter.composables.AddBabScreen
+
 import com.example.cs4520_twitter.composables.BabFeed
+
 import com.example.cs4520_twitter.composables.LoginScreen
 import com.example.cs4520_twitter.composables.UserProfileScreen
 
@@ -55,6 +59,9 @@ fun AppNavHost(
         }
         composable(NavigationItem.Followers.route) {
 //            LoginScreen(navController)
+        }
+        composable(NavigationItem.AddBab.route) {
+            AddBabScreen() // currently uses dummy data for user card
         }
     }
 }

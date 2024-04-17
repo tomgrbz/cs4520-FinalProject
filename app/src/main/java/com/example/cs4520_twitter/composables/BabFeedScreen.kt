@@ -28,7 +28,7 @@ import com.example.cs4520_twitter.data_layer.database.dummyBabList
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.vms.BabFeedViewModel
 
-// file for the BabFeed composable. Currently uses a dummy list of babs.
+// file for the BabFeed composable.
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
@@ -63,7 +63,7 @@ fun BabFeed() {
             bottomBar = {},           // navigation bar already on main
             floatingActionButton = {} // we won't use this for the feed screen
         ) { innerPadding ->
-            LazyColumn( // contains the list of Babs. TODO: Have API fetch random babs to display
+            LazyColumn( // contains the list of Babs.
                 modifier = Modifier
                     .padding(innerPadding)
                     .height((maxHeight * 0.8).dp),
