@@ -25,6 +25,6 @@ class BabFeedScreenUiTest {
     fun testBabFeedSetup(){
         // basic components should be on screen
         // composeTestRule.onNodeWithText("@", substring = true).assertExists() // for username of bab post cards
-        composeTestRule.onNodeWithText("Babble Feed").assertExists()         // screen title
+        composeTestRule.onNodeWithText("Babble Feed").assertExists() // screen title
     }
 }
