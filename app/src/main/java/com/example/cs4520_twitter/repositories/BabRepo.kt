@@ -6,8 +6,6 @@ import com.example.cs4520_twitter.data_layer.api.models.LikesResponse
 import com.example.cs4520_twitter.data_layer.api.models.RandomBabsResponse
 import com.example.cs4520_twitter.data_layer.database.AppDatabase
 import com.example.cs4520_twitter.data_layer.database.BabEntity
-import retrofit2.http.Body
-import retrofit2.http.Path
 import java.util.UUID
 
 interface BabRepository {
@@ -55,7 +53,7 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
                 babDao.deleteById(babId)
             }
         } catch (e: Exception) {
-            // Do Nothing
+            throw Exception("Not able to delete bab")
         }
     }
 
@@ -64,11 +62,17 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
     }
 
     override suspend fun getRandomBabs(): RandomBabsResponse {
-        return api.getRandomBabs()
+        val response = api.getRandomBabs()
+         for(bab in response.babs) {
+             this.insertBab(bab)
+         }
+        return response
     }
 
     override suspend fun addBab(userID: UUID, content: String): AddBabResponse {
-        return api.addBab(userID, content)
+        val response = api.addBab(userID, content)
+        this.insertBab(response.bab)
+        return response
     }
 
     override suspend fun getUserBabs(babID: Int, userID: UUID): LikesResponse {

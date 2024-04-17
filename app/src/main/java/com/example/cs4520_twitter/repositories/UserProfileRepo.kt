@@ -13,7 +13,7 @@ interface UserProfileRepository {
     suspend fun updateDescriptionByUserID(userID:String, descr :String)
     suspend fun updateFollowingListByUserID(userID:String, followingList: List<UserEntity>,
                                             followingCount: Int)
-    suspend fun insertUserProfile(userProfile: UserProfileEntity)
+    suspend fun insertUserProfile(userProfile: UserProfileEntity?)
 }
 
 /**
@@ -29,14 +29,17 @@ class UserProfileRepo(private val db : AppDatabase, private val api : ProfilesAp
             val apiResult: Response<UserProfileEntity> = api.getUserProfile(userId)
 
             if (apiResult.isSuccessful) {
+                this.insertUserProfile(apiResult.body())
                 apiResult.body() // Assuming the body contains UserProfileEntity
             } else {
                 // if API Call does not work
+                val response = userProfileDao.getUserProfileById(userID)
+                this.insertUserProfile(response)
                 userProfileDao.getUserProfileById(userID)
             }
+
         } catch (e: Exception) {
-            // Do Nothing
-            null
+            throw Exception("Cannot get User Profile")
         }
     }
 
@@ -52,8 +55,8 @@ class UserProfileRepo(private val db : AppDatabase, private val api : ProfilesAp
     }
 
     // Inserts a user profile into the local database
-    override suspend fun insertUserProfile(userProfile: UserProfileEntity) {
-        userProfileDao.insert(userProfile)
+    override suspend fun insertUserProfile(userProfile: UserProfileEntity?) {
+        userProfileDao.insert(userProfile as UserProfileEntity)
     }
 
 }
