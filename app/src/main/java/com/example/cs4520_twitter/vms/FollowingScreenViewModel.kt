@@ -26,8 +26,11 @@ class FollowingScreenViewModel(val followApi : FollowsApi,
     private val _following = MutableStateFlow<List<UserEntity>>(emptyList()) // babs of logged in user
     val following: StateFlow<List<UserEntity>> get() = _following.asStateFlow()
 
-    fun unfollow(actionUserId: String, usertoUnfollowId: String) {
-        val actingUUID = UUID.fromString(actionUserId)
+    private val _count = MutableStateFlow<Int>(0);
+    val count: StateFlow<Int> get() = _count.asStateFlow()
+
+    fun unfollow(usertoUnfollowId: String) {
+        val actingUUID = UUID.fromString(LoggedInUser.loggedInUserId)
         val toUnfollowUUID = UUID.fromString(usertoUnfollowId)
 
         viewModelScope.launch {
@@ -40,14 +43,14 @@ class FollowingScreenViewModel(val followApi : FollowsApi,
         }
     }
 
-    fun fetchFollowingOfUser(userId: String) {
-        val loggedUUID = UUID.fromString(userId)
+    fun fetchFollowingOfUser() {
+        val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
         _isLoading.value = true
 
         viewModelScope.launch {
             try {
                 val resp = userApi.getUsersFollowing(loggedUUID)
-                Log.i("FollowingScreenViewModel", "Obtained logged in user following " + userId)
+                Log.i("FollowingScreenViewModel", "Obtained logged in user following $loggedUUID")
                 _isLoading.value = false
                 _following.value = resp.following
 
