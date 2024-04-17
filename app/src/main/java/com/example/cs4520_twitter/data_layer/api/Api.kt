@@ -83,6 +83,4 @@ object Api {
     val followsApiService: FollowsApi by lazy {
         followsRetrofit.create(FollowsApi::class.java)
     }
-
-
 }
