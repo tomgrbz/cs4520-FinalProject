@@ -1,6 +1,7 @@
 package com.example.cs4520_twitter.vms
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -34,22 +35,23 @@ class AddBabViewModel(private val babApi: BabApi,
         viewModelScope.launch {
             try {
                 val resp = profileApi.getUserProfile(loggedUUID)
-                Log.i("ProfileViewModel", "Obtained logged in user profile " + resp)
+                Log.i("AddBabViewModel", "Obtained logged in user profile " + resp)
 
                 _loggedInProfile.value = resp.profile
             } catch (e: Exception) {
-                Log.e("ProfileViewModel", "Failed to fetch resp due to $e")
+                Log.e("AddBabViewModel", "Failed to fetch resp due to $e")
             }
         }
     }
 
     fun addBabForLoggedInUser(babContent : String) {
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
+
         viewModelScope.launch {
             try {
-                Log.i("AddBabViewModel", "Given login uuid is: $loggedUUID" )
                 val resp = babApi.addBab(loggedUUID, AddBabRequest( babContent))
                 Log.i("AddBabViewModel", "Added a bab response " + resp)
+
             } catch (e: Exception) {
                 Log.e("AddBabViewModel", "Failed to add a bab resp $e")
             }
