@@ -2,8 +2,12 @@ package com.example.cs4520_twitter
 
 import androidx.room.Embedded
 import androidx.room.PrimaryKey
+import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
+import com.example.cs4520_twitter.data_layer.database.dummyUser
+import com.example.cs4520_twitter.data_layer.database.dummyUsername
+import java.text.SimpleDateFormat
 import java.util.UUID
 
 
@@ -23,3 +27,15 @@ val fakeProfile: UserProfileEntity = UserProfileEntity(
     listOf<UserEntity>(fakeUser3, fakeUser4, fakeUser5),
     2
     )
+
+val fakeBab =
+    BabEntity(
+        babID = 0,
+        authorUser = fakeUser1,
+        content = "I made a post!",
+        date = SimpleDateFormat("yyyy-MM-dd").parse("2024-04-07"),
+        likes = 0,
+        likedUserList = mutableListOf()
+    )
+
+val fakeUser1Babs = listOf<BabEntity>(fakeBab, fakeBab, fakeBab)
