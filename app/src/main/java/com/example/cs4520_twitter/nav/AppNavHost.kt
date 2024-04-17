@@ -1,11 +1,20 @@
 package com.example.cs4520_twitter.nav
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.cs4520_twitter.composables.SearchScreen
+
+import com.example.cs4520_twitter.composables.AddBabScreen
+
 import com.example.cs4520_twitter.composables.BabFeed
+
 import com.example.cs4520_twitter.composables.LoginScreen
 import com.example.cs4520_twitter.composables.UserProfileScreen
 
@@ -42,19 +51,22 @@ fun AppNavHost(
             BabFeed() // currently uses dummy data
         }
         composable(NavigationItem.Login.route) {
-            LoginScreen() // currently uses dummy data
+            LoginScreen(navController) // currently uses dummy data
         }
         composable(NavigationItem.Profile.route) {
-            UserProfileScreen() // currently uses dummy data
+            UserProfileScreen(navController = navController) // currently uses dummy data
         }
         composable(NavigationItem.EditProfile.route) {
 //            LoginScreen(navController)
         }
         composable(NavigationItem.Search.route) {
-//            LoginScreen(navController)
+            SearchScreen()
         }
         composable(NavigationItem.Followers.route) {
 //            LoginScreen(navController)
+        }
+        composable(NavigationItem.AddBab.route) {
+            AddBabScreen() // currently uses dummy data for user card
         }
     }
 }

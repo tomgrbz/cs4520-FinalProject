@@ -1,7 +1,9 @@
 package com.example.cs4520_twitter.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,25 +36,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavController
+import com.example.cs4520_twitter.app_state.LoggedInUser
+import com.example.cs4520_twitter.nav.NavigationItem
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerBlue
 import com.example.cs4520_twitter.vms.LoginViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     val configuration = LocalConfiguration.current // for obtaining screen dimensions
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
     val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 
+    val registerMessage = "Don't have an account?\nClick to sign up!"
+    val loginMessage = "Already have an account?\nClick to log in!"
+
     // Use to show a loading animation while making api calls
     val isLoading by viewModel.isLoading.collectAsState()
+    val success by viewModel.success.collectAsState()
 
-
-
+    if (success) {
+        LaunchedEffect(Unit) {
+            navController.navigate(NavigationItem.Feed.route)
+        }
+    }
     Box(modifier = with(Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
@@ -64,6 +76,9 @@ fun LoginScreen() {
 
             var usernameText by remember { mutableStateOf("") }
             var passwordText by remember { mutableStateOf("") }
+            // determine if user is logging in or registering
+            var inLoginMode by remember { mutableStateOf(true) }
+            var registerOrLoginText by remember { mutableStateOf(registerMessage) }
 
             // Babble title text
             val titleFontSize = 30
@@ -139,13 +154,22 @@ fun LoginScreen() {
                     })
 
             // Button for login
+            val context  = LocalContext.current
             Button(
                 onClick = {
-                    viewModel.login(
-                        usernameText,
-                        passwordText
-                    )
-                }, // TODO: button functionality
+                    if (inLoginMode) {
+                        viewModel.login(usernameText, passwordText)
+                        usernameText = ""
+                        passwordText = ""
+                        Toast.makeText(context, "Attempted login", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // otherwise, sign up. VM makes check if fields are blank or not
+                        viewModel.signUp(usernameText, passwordText)
+                        usernameText = ""
+                        passwordText = ""
+                        Toast.makeText(context, "Attempted signup", Toast.LENGTH_SHORT).show()
+                    }
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -163,20 +187,35 @@ fun LoginScreen() {
                     containerColor = Color.White
                 )
             ) {
-                Text(
-                    text = "Login",
-                    fontSize = 14.sp
-                )
+                if (inLoginMode) {
+                    Text(
+                        text = "Login", // display login if in login mode
+                        fontSize = 14.sp
+                    )
+                } else {
+                    Text(
+                        text = "Register", // else display register
+                        fontSize = 14.sp
+                    )
+                }
             }
 
-            Text( // TODO: on click functionality for registration
-                text = "Don't have an account?\nClick to sign up!",
+            Text(text = registerOrLoginText,
                 color = darkerBlue,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .height(60.dp)
                     .width(350.dp)
+                    .clickable(onClick = { // press on text to register or log in
+                        inLoginMode = !inLoginMode
+                        registerOrLoginText =
+                            if (registerOrLoginText == loginMessage) {
+                                registerMessage
+                            } else {
+                                loginMessage
+                            }
+                    })
                     .constrainAs(registerText) {
                         top.linkTo(loginButton.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
