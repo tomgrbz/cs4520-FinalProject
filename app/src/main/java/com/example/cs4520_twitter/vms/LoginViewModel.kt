@@ -22,6 +22,9 @@ class LoginViewModel(
     private val _isLoading = MutableStateFlow<Boolean>(false);
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
 
+    private val _success = MutableStateFlow<Boolean>(false);
+    val success: StateFlow<Boolean> get() = _success.asStateFlow()
+
     fun login(username: String, password: String) {
         // validate user credentials
         _isLoading.value = true
@@ -31,8 +34,7 @@ class LoginViewModel(
                 val resp = loginApi.login(CredentialsPostRequest(username, password))
 
                 LoggedInUser.loggedInUserId = resp.user.userID
-            } catch (e: Exception) {
-                throw e
+                _success.value = true
             } finally {
                 _isLoading.value = false
             }
@@ -48,9 +50,9 @@ class LoginViewModel(
                 try {
                     val resp = signupApi.signup(CredentialsPostRequest(username, password))
                     LoggedInUser.loggedInUserId = resp.user.userID
-
                 } finally {
                     _isLoading.value = false
+
                 }
             }
         }

@@ -8,6 +8,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -17,7 +18,7 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun NavBar(navController: NavHostController) {
+fun NavBar(navController: NavHostController, bottomBarState: MutableState<Boolean>) {
     val items = listOf(
         BottomNavItem.Feed,
         BottomNavItem.Search,
@@ -25,40 +26,42 @@ fun NavBar(navController: NavHostController) {
         BottomNavItem.Profile
     )
 
-    NavigationBar(
-        containerColor = Color.White
-    ) {
-        Row() {
-            items.forEach { screen ->
-                NavigationBarItem(
-                    // Text that shows bellow the icon
-                    label = {
-                        Text(text = screen.title, fontSize = 15.sp)
-                    },
+    if (bottomBarState.value) {
+        NavigationBar(
+            containerColor = Color.White
+        ) {
+            Row() {
+                items.forEach { screen ->
+                    NavigationBarItem(
+                        // Text that shows bellow the icon
+                        label = {
+                            Text(text = screen.title, fontSize = 15.sp)
+                        },
 
-                    // The icon resource
-                    icon = {
-                        Icon(
-                            painterResource(id = screen.icon),
-                            contentDescription = screen.title,
-                            Modifier.size(25.dp),
+                        // The icon resource
+                        icon = {
+                            Icon(
+                                painterResource(id = screen.icon),
+                                contentDescription = screen.title,
+                                Modifier.size(25.dp),
+                            )
+                        },
+
+                        // Display if the icon it is select or not
+                        selected = true,
+
+                        // Always show the label bellow the icon or not
+                        alwaysShowLabel = true,
+
+                        // Click listener for the icon
+                        onClick = { navController.navigate(screen.screenVal.name) },
+
+                        // Control all the colors of the icon
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = Color.White,
                         )
-                    },
-
-                    // Display if the icon it is select or not
-                    selected = true,
-
-                    // Always show the label bellow the icon or not
-                    alwaysShowLabel = true,
-
-                    // Click listener for the icon
-                    onClick = { navController.navigate(screen.screenVal.name) },
-
-                    // Control all the colors of the icon
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.White,
                     )
-                )
+                }
             }
         }
     }
