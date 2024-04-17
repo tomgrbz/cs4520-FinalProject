@@ -23,7 +23,6 @@ class BabFeedViewModel(private val babApi : BabApi) : ViewModel() {
 
     fun fetchBabs() {
         // method for filling the bab feed
-
         _isLoading.value = true
 
         viewModelScope.launch {

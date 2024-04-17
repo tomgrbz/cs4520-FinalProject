@@ -42,8 +42,10 @@ import com.example.cs4520_twitter.ui.theme.blue
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
+import com.example.cs4520_twitter.data_layer.database.dummyBabList
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
+import com.example.cs4520_twitter.data_layer.database.dummyUser
 import com.example.cs4520_twitter.data_layer.database.dummyUsername
 import com.example.cs4520_twitter.nav.NavigationItem
 import com.example.cs4520_twitter.vms.ProfileViewModel

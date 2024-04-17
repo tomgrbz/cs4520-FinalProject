@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.cs4520_twitter.composables.SearchScreen
 
 import com.example.cs4520_twitter.composables.AddBabScreen
 
@@ -59,7 +60,7 @@ fun AppNavHost(
 //            LoginScreen(navController)
         }
         composable(NavigationItem.Search.route) {
-//            LoginScreen(navController)
+            SearchScreen()
         }
         composable(NavigationItem.Followers.route) {
 //            LoginScreen(navController)
