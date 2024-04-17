@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,27 +58,32 @@ import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
 import com.example.cs4520_twitter.data_layer.database.dummyUsername
 import com.example.cs4520_twitter.vms.EditProfileViewModel
+import com.example.cs4520_twitter.vms.ProfileViewModel
 
 // File contains screen composable. Dummy data is imported from the database folder.
 @OptIn(ExperimentalGlideComposeApi::class)
 @Preview(showBackground = true)
 @Composable
-fun EditProfileScreen(profile : UserProfileEntity = dummyProfile) {
-    val editProfileViewModel: EditProfileViewModel = viewModel()
+fun EditProfileScreen() {
+    val viewModel: EditProfileViewModel = viewModel(factory = EditProfileViewModel.Factory)
+    viewModel.fetchLoggedInUserProfile() // fetch user profile
+    viewModel.fetchLoggedInUserBabs()    // fetch babs
+
+    val babs by viewModel.babList.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()                // babs of this user profile
+    // babs of this user profile
+    val userProfile by viewModel.loggedInProfile.collectAsState() // user profile
+
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
-    val dummyFollowerCount = profile.followerCount
-    val dummyFollowingCount = profile.followingCount
-    val dummyBabCount = profile.babCount
     val usernameSize = 20 // hardcoded dim.'s
     val dataTextSize = 14
     val iconDim = maxWidth * 0.30 // around a third of the screen width
     val userNameFieldDim = maxWidth * .4
-    val dummyBabList = mutableListOf(dummyBab, dummyBab, dummyBab, dummyBab, dummyBab)
 
-    var usernameInput by remember { mutableStateOf(profile.user.username) }
-    var descriptionInput by remember { mutableStateOf(profile.description) }
+    var usernameInput by remember { mutableStateOf(userProfile.user.username) }
+    var descriptionInput by remember { mutableStateOf(userProfile.description) }
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -136,49 +142,51 @@ fun EditProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
 
             // Username text
-            TextField(
-                value = usernameInput,
-                onValueChange = { value -> usernameInput = value },
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = Color.Black,
-                ),
-                // textAlign = TextAlign.Center,
+            if (!isLoading) {
+                TextField(
+                    value = usernameInput,
+                    onValueChange = { value -> usernameInput = value },
+                    singleLine = true,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.White,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                    ),
+                    // textAlign = TextAlign.Center,
 //                fontSize = usernameSize.sp,
-                modifier = Modifier
-                    .width((userNameFieldDim).dp)
-                    .border(1.dp, blue, RoundedCornerShape(5.dp))
-                    .constrainAs(username) {
-                        top.linkTo(userIcon.bottom, margin = 10.dp)
-                        absoluteLeft.linkTo(
-                            userBanner.absoluteLeft,
-                            margin = (maxWidth / 2 - userNameFieldDim / 2).dp
-                        )
-                    })
-
-            IconButton(
-                onClick = { editProfileViewModel.updateName(usernameInput) },
-                modifier = Modifier.constrainAs(usernameSaveIcon) {
-                    start.linkTo(username.end, margin = 5.dp)
-                    top.linkTo(username.top, margin = 5.dp)
-                }
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.save_icon),
-                    contentDescription = "Trailing Icon",
                     modifier = Modifier
-                        .requiredSize(20.dp)
-                )
+                        .width((userNameFieldDim).dp)
+                        .border(1.dp, blue, RoundedCornerShape(5.dp))
+                        .constrainAs(username) {
+                            top.linkTo(userIcon.bottom, margin = 10.dp)
+                            absoluteLeft.linkTo(
+                                userBanner.absoluteLeft,
+                                margin = (maxWidth / 2 - userNameFieldDim / 2).dp
+                            )
+                        })
+
+                IconButton(
+                    onClick = { viewModel.updateName(usernameInput) },
+                    modifier = Modifier.constrainAs(usernameSaveIcon) {
+                        start.linkTo(username.end, margin = 5.dp)
+                        top.linkTo(username.top, margin = 5.dp)
+                    }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.save_icon),
+                        contentDescription = "Trailing Icon",
+                        modifier = Modifier
+                            .requiredSize(20.dp)
+                    )
+                }
             }
 
 
             // Num. of Followers text
             Text(
-                "Followers: $dummyFollowerCount",
+                "Followers: ${userProfile?.followerCount}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -192,7 +200,7 @@ fun EditProfileScreen(profile : UserProfileEntity = dummyProfile) {
 
             // Num. of Following text
             Text(
-                "Following: $dummyFollowingCount",
+                "Following: ${userProfile?.followingCount}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -206,7 +214,7 @@ fun EditProfileScreen(profile : UserProfileEntity = dummyProfile) {
 
             // Num. of Posts text
             Text(
-                "Babs: $dummyBabCount",
+                "Babs: ${userProfile?.babCount}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -239,44 +247,48 @@ fun EditProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     fontSize = 14.sp
                 )
             }
-            // user desc.
-            TextField(
-                value = userDescText,
-                onValueChange = { userDescText = it },
-                maxLines = 4,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    disabledContainerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(350.dp)
-                    .border(1.dp, blue, RoundedCornerShape(5.dp))
-                    .constrainAs(userDesc) {
-                        top.linkTo(username.bottom, margin = 10.dp)
-                        absoluteRight.linkTo(
-                            userBanner.absoluteRight,
-                            margin = 25.dp
-                        )
-                    },
-            )
-            IconButton(
-                onClick = { editProfileViewModel.updateDesc(descriptionInput) },
-                modifier = Modifier.constrainAs(descSaveIcon) {
-                    top.linkTo(userDesc.top, margin = 5.dp)
-                    end.linkTo(userDesc.end, margin = 5.dp)
-                }
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.save_icon),
-                    contentDescription = "Trailing Icon",
+
+            if (!isLoading) {
+                // user desc.
+                TextField(
+                    value = userDescText,
+                    onValueChange = { userDescText = it },
+                    maxLines = 4,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                    ),
                     modifier = Modifier
-                        .size(20.dp)
+                        .height(60.dp)
+                        .width(350.dp)
+                        .border(1.dp, blue, RoundedCornerShape(5.dp))
+                        .constrainAs(userDesc) {
+                            top.linkTo(username.bottom, margin = 10.dp)
+                            absoluteRight.linkTo(
+                                userBanner.absoluteRight,
+                                margin = 25.dp
+                            )
+                        },
                 )
+                IconButton(
+                    onClick = { viewModel.updateDesc(descriptionInput) },
+                    modifier = Modifier.constrainAs(descSaveIcon) {
+                        top.linkTo(userDesc.top, margin = 5.dp)
+                        end.linkTo(userDesc.end, margin = 5.dp)
+                    }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.save_icon),
+                        contentDescription = "Trailing Icon",
+                        modifier = Modifier
+                            .size(20.dp)
+                    )
+                }
+
             }
 
 
@@ -293,9 +305,9 @@ fun EditProfileScreen(profile : UserProfileEntity = dummyProfile) {
                         )
                     }) {
                 items(
-                    count = dummyBabList.size,
+                    count = babs.size,
                     itemContent = { index ->
-                        BabCard(dummyBabList[index], editMode = true)
+                        BabCard(babs[index], editMode = true)
                     }
                 )
             }

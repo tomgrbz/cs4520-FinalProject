@@ -2,8 +2,12 @@ package com.example.cs4520_twitter.vms
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.cs4520_twitter.app_state.LoggedInUser
+import com.example.cs4520_twitter.application.BabbleApplication
+import com.example.cs4520_twitter.data_layer.api.BabApi
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
 import com.example.cs4520_twitter.data_layer.api.UsersApi
 import com.example.cs4520_twitter.data_layer.database.BabEntity
@@ -24,23 +28,35 @@ class EditProfileViewModel(val profileApi : ProfilesApi,
     val babList: StateFlow<List<BabEntity>> get() = _babList.asStateFlow()
 
     private val _loggedInProfile = MutableStateFlow<UserProfileEntity>(dummyProfile) // logged in profile
+    val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
+
     val loggedInProfile: StateFlow<UserProfileEntity> get() = _loggedInProfile.asStateFlow()
 
-    fun updateDesc(newDesc: String) {}
+    fun updateDesc(newDesc: String) {
+        viewModelScope.launch {
+            try {
+                val resp = userApi
+                Log.i("ProfileViewModel", "Obtained logged in user profile " + resp)
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Failed to fetch resp due to $e")
+            }
+        }
+    }
 
     fun updateName(newName: String) {}
 
-    fun toastMessage() {}
+    fun toastMessage() {
+
+    }
 
     fun fetchLoggedInUserProfile() {
-        val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
-
         viewModelScope.launch {
             try {
                 val resp = profileApi.getUserProfile(loggedUUID)
                 Log.i("ProfileViewModel", "Obtained logged in user profile " + resp)
 
-//                _loggedInProfile.value = resp.profile TODO
+                _loggedInProfile.value = resp.profile
+                _isLoading.value = false
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Failed to fetch resp due to $e")
             }
@@ -49,8 +65,6 @@ class EditProfileViewModel(val profileApi : ProfilesApi,
 
     fun fetchLoggedInUserBabs() {
         val loggedUUID = UUID.fromString(LoggedInUser.loggedInUserId)
-        _isLoading.value = true
-
         viewModelScope.launch {
             try {
                 val resp = userApi.getUserBabs(loggedUUID)
@@ -62,16 +76,16 @@ class EditProfileViewModel(val profileApi : ProfilesApi,
         }
     }
 
-//    companion object {
-//        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-//            @Suppress("UNCHECKED_CAST")
-//            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-//
-//                val application =
-//                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-//                return ProfileViewModel((application as BabbleApplication).appContainer.profilesApiService,
-//                    (application as BabbleApplication).appContainer.usersApiService) as T
-//            }
-//        }
-//    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                return EditProfileViewModel((application as BabbleApplication).appContainer.profilesApiService,
+                    (application as BabbleApplication).appContainer.usersApiService) as T
+            }
+        }
+    }
 }
