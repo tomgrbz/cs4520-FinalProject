@@ -25,5 +25,4 @@ interface BabApi {
 
     @POST(Api.BABS_ENDPOINT + "/{userID}")
     suspend fun addBab(@Path("userID") userID: UUID, @Body contentBody: AddBabRequest): AddBabResponse
-
 }
