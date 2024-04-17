@@ -122,14 +122,14 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
             // Username text
             Log.i("ProfileScreen", "profile user is: " + userProfile.user.toString())
             Text(
-                userProfile.user.username,  // TODO: Error is here according to logs, for newly registered users, profile is fetched as null
+                userProfile.user.username,
                 fontSize = usernameSize.sp,
                 modifier = Modifier
                     .constrainAs(username) {
                         top.linkTo(userIcon.bottom, margin = (5).dp)
                         absoluteLeft.linkTo(
                             userBanner.absoluteLeft,
-                            margin = (maxWidth / 2 - (userProfile.user.username.length // TODO: Error is here according to logs
+                            margin = (maxWidth / 2 - (userProfile.user.username.length
                                     * (usernameSize / 2)) / 2).dp
                         )
                     })
