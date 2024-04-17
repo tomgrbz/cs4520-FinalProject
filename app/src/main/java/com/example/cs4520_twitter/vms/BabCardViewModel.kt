@@ -47,7 +47,7 @@ class BabCardViewModel(private val babApi: BabApi,
         viewModelScope.launch {
             try {
                 val resp = babApi.likeBab(babId, UserIDBodyRequest(LoggedInUser.loggedInUserId))
-                Log.i("BabCardViewModel", "Liked a bab response " + resp)
+                Log.i("BabCardViewModel", "Liked  a bab response with given babID $babId" + resp)
 
             } catch (e: Exception) {
                 Log.e("BabCardViewModel", "Failed to like a bab $e")
@@ -60,7 +60,7 @@ class BabCardViewModel(private val babApi: BabApi,
         viewModelScope.launch {
             try {
                 val resp = babApi.unlikeBab(babId, UserIDBodyRequest(LoggedInUser.loggedInUserId))
-                Log.i("BabCardViewModel", "Unliked a bab response " + resp)
+                Log.i("BabCardViewModel", "Unliked a bab response with given babID $babId" + resp)
 
             } catch (e: Exception) {
                 Log.e("BabCardViewModel", "Failed to unlike a bab $e")
