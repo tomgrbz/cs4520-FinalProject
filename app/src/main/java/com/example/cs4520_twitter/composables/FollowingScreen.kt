@@ -127,7 +127,7 @@ fun FollowingScreen(profile: UserProfileEntity) {
                                 start.linkTo(image.end, margin = 10.dp)
                             })
                         Button(
-                            onClick = { viewModel.unfollow(followedUser.userID) },
+                            onClick = { viewModel.unfollow(followedUser.userID, profile.user.userID) },
                             contentPadding = PaddingValues(0.dp),
                             border = BorderStroke(2.dp, blue
                             ),
