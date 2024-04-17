@@ -38,4 +38,4 @@ val fakeBab =
         likedUserList = mutableListOf()
     )
 
-val fakeUser1Babs = listOf<BabEntity>(fakeBab, fakeBab, fakeBab)
+val fakeUser1Babs = mutableListOf<BabEntity>(fakeBab, fakeBab, fakeBab)
