@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.cs4520_twitter.composables.SearchScreen
+import com.example.cs4520_twitter.composables.BabFeed
 import com.example.cs4520_twitter.composables.LoginScreen
 import com.example.cs4520_twitter.composables.UserProfileScreen
 
@@ -39,7 +40,7 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable(NavigationItem.Feed.route) {
-//            HomeScreen() TODO("update to the screen components as they are implemented")
+            BabFeed() // currently uses dummy data
         }
         composable(NavigationItem.Login.route) {
             LoginScreen() // currently uses dummy data

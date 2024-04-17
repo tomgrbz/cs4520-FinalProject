@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,16 +39,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cs4520_twitter.R
+import com.example.cs4520_twitter.data_layer.database.BabEntity
+import com.example.cs4520_twitter.vms.BabFeedViewModel
 import com.example.cs4520_twitter.vms.SearchScreenViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 @Preview(showBackground = true)
 fun SearchScreen() {
-    val viewModel: SearchScreenViewModel = viewModel()
-
-    LaunchedEffect(key1 = true) {
-        viewModel
-    }
+    val viewModel: SearchScreenViewModel = viewModel(factory = SearchScreenViewModel.Factory)
+    val searchResults by viewModel.results.collectAsState()
+    val loading by viewModel.loading.collectAsState()
 
     var searchInput by remember { mutableStateOf("") }
     val configuration = LocalConfiguration.current
@@ -105,25 +108,23 @@ fun SearchScreen() {
         }
 
         Box(modifier = Modifier.fillMaxWidth()) {
-            if (viewModel.loading.value == true) {
+            if (loading) {
                 CircularProgressIndicator(modifier = Modifier.size(100.dp))
-            } else if (viewModel.results.value?.size == 0) {
+            } else if (searchResults.isEmpty()) {
                 Text("No search results available.",
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center)
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp)
             } else {
                 // List of Babs
                 LazyColumn(userScrollEnabled = true,
                     modifier = Modifier
                 ) {
-                    viewModel.results.value?.let { it ->
-                        items(
-                            count = it.size,
-                            itemContent = { index ->
-                                BabCard(it[index])
-                            }
-                        )
-                    }
+                    items(
+                        count = searchResults.size,
+                        itemContent = { index ->
+                            BabCard(searchResults[index])
+                        })
                 }
             }
         }
