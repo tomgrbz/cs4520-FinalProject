@@ -2,6 +2,7 @@ package com.example.cs4520_twitter.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerBlue
@@ -46,10 +46,11 @@ fun LoginScreen() {
     val maxWidth = configuration.screenWidthDp
     val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 
+    val registerMessage = "Don't have an account?\nClick to sign up!"
+    val loginMessage = "Already have an account?\nClick to log in!"
+
     // Use to show a loading animation while making api calls
     val isLoading by viewModel.isLoading.collectAsState()
-
-
 
     Box(modifier = with(Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -64,6 +65,9 @@ fun LoginScreen() {
 
             var usernameText by remember { mutableStateOf("") }
             var passwordText by remember { mutableStateOf("") }
+            // determine if user is logging in or registering
+            var inLoginMode by remember { mutableStateOf(true) }
+            var registerOrLoginText by remember { mutableStateOf(registerMessage) }
 
             // Babble title text
             val titleFontSize = 30
@@ -141,11 +145,13 @@ fun LoginScreen() {
             // Button for login
             Button(
                 onClick = {
-                    viewModel.login(
-                        usernameText,
-                        passwordText
-                    )
-                }, // TODO: button functionality
+                    if (inLoginMode) {
+                        viewModel.login(usernameText, passwordText)
+                    } else {
+                        // otherwise, sign up. VM makes check if fields are blank or not
+                        viewModel.signUp(usernameText, passwordText)
+                    }
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -163,20 +169,35 @@ fun LoginScreen() {
                     containerColor = Color.White
                 )
             ) {
-                Text(
-                    text = "Login",
-                    fontSize = 14.sp
-                )
+                if (inLoginMode) {
+                    Text(
+                        text = "Login", // display login if in login mode
+                        fontSize = 14.sp
+                    )
+                } else {
+                    Text(
+                        text = "Register", // else display register
+                        fontSize = 14.sp
+                    )
+                }
             }
 
-            Text( // TODO: on click functionality for registration
-                text = "Don't have an account?\nClick to sign up!",
+            Text(text = registerOrLoginText,
                 color = darkerBlue,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .height(60.dp)
                     .width(350.dp)
+                    .clickable(onClick = { // press on text to register or log in
+                        inLoginMode = !inLoginMode
+                        registerOrLoginText =
+                            if (registerOrLoginText == loginMessage) {
+                                registerMessage
+                            } else {
+                                loginMessage
+                            }
+                    })
                     .constrainAs(registerText) {
                         top.linkTo(loginButton.bottom, margin = (maxHeight * 0.1).dp)
                         absoluteLeft.linkTo(
