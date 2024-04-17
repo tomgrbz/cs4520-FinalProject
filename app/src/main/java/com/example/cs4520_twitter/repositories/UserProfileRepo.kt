@@ -1,19 +1,19 @@
 package com.example.cs4520_twitter.repositories
 
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
-import com.example.cs4520_twitter.data_layer.api.UsersApi
 import com.example.cs4520_twitter.data_layer.database.AppDatabase
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import retrofit2.Response
-import retrofit2.http.Path
 import java.util.UUID
 
+// User Profile Repository
 interface UserProfileRepository {
     suspend fun getUserProfile(userID: String): UserProfileEntity?
     suspend fun updateDescriptionByUserID(userID:String, descr :String)
     suspend fun updateFollowingListByUserID(userID:String, followingList: List<UserEntity>,
                                             followingCount: Int)
+    suspend fun insertUserProfile(userProfile: UserProfileEntity)
 }
 
 /**
@@ -22,50 +22,38 @@ interface UserProfileRepository {
 class UserProfileRepo(private val db : AppDatabase, private val api : ProfilesApi ) : UserProfileRepository {
     private val userProfileDao = db.userProfileDao()
 
-    /** Fetches list of User from Local database*/
+    // Fetches a user local or remotely
     override suspend fun getUserProfile(userID:String) : UserProfileEntity? {
+        return try {
+            val userId = UUID.fromString(userID)
+            val apiResult: Response<UserProfileEntity> = api.getUserProfile(userId)
 
-        //return userProfileDao.getUserProfileById(userID)
-
-        val userId: UUID = userID as UUID //(UUID???)
-        // Fetch data from third party API
-        val remoteResult: Unit = api.getUserProfile(userId)
-        when (remoteResult) {
-            remoteResult.isSucessful -> {
-                // When success replace the local database and return the result
-                // You could also return the local data for a single source of truth pattern
-                localDataSource.updateUserInfo(remoteResult.data)
-                return Result.Success(remoteResult.data)
+            if (apiResult.isSuccessful) {
+                apiResult.body() // Assuming the body contains UserProfileEntity
+            } else {
+                // if API Call does not work
+                userProfileDao.getUserProfileById(userID)
             }
-            is Result.Error -> {
-                // If error fallback to local database
-                val localResult = localDataSource.getUserInfo()
-                when (localResult) {
-                    is Result.Success -> {
-                        return Result.Success(localResult.data)
-                    }
-                    is Result.Error -> {
-                        return Result.Error(localResult.exception)
-                    }
-                    is Result.Loading -> {
-                        return Result.Loading
-                    }
-                }
-            }
+        } catch (e: Exception) {
+            // Do Nothing
+            null
         }
     }
+
+    // Updates a description via UserID
     override suspend fun updateDescriptionByUserID(userID:String, descr :String) {
-        return userProfileDao.updateDescriptionByUserID(userID, descr)
+         userProfileDao.updateDescriptionByUserID(userID, descr)
     }
 
+    // Updates a Users Following list
     override suspend fun updateFollowingListByUserID(userID:String, followingList: List<UserEntity>,
                                                      followingCount: Int) {
-        return userProfileDao.updateFollowingListByUserID(userID, followingList, followingCount)
+         userProfileDao.updateFollowingListByUserID(userID, followingList, followingCount)
     }
 
-
-    private fun whichDataSource() {
-
+    // Inserts a user profile into the local database
+    override suspend fun insertUserProfile(userProfile: UserProfileEntity) {
+        userProfileDao.insert(userProfile)
     }
 
 }
