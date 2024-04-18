@@ -2,7 +2,7 @@
 -----------------------------------------
 - Upon opening the application, you will be shown the log in screen. 
 
-![img.png](photo/login_screen.png)
+![img.png](photos/login_screen.png)
 
 
 - Either log in with valid credentials (you can use "ben10" as the username and "qwerty" as the password)
