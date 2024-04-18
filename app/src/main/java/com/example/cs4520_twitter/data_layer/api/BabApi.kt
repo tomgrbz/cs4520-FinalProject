@@ -5,6 +5,7 @@ import com.example.cs4520_twitter.data_layer.api.models.AddBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.DeleteBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.LikesResponse
 import com.example.cs4520_twitter.data_layer.api.models.RandomBabsResponse
+import com.example.cs4520_twitter.data_layer.api.models.UserIDBodyRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -15,7 +16,10 @@ import java.util.UUID
 interface BabApi {
 
     @POST(Api.BABS_ENDPOINT + "/{babID}/likes")
-    suspend fun getUserBabs(@Path("babID") babID: Int, @Body userID: UUID): LikesResponse
+    suspend fun likeBab(@Path("babID") babID: Int, @Body body: UserIDBodyRequest): LikesResponse
+
+    @POST(Api.BABS_ENDPOINT + "/{babID}/unlikes")
+    suspend fun unlikeBab(@Path("babID") babID: Int, @Body body: UserIDBodyRequest): LikesResponse
 
     @DELETE(Api.BABS_ENDPOINT + "/{babID}")
     suspend fun deleteBab(@Path("babID") babID: Int): DeleteBabResponse
