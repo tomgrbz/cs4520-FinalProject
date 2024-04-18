@@ -4,7 +4,7 @@ API Link: https://github.com/tomgrbz/cs4520-backend-api
 
 ## The Babble App
 
-Our team developed an application for sharing _BABS_ with friends! Our app allows anyone to log in with valid credentials or register a new account. Our app offers a profile for users to view, the ability to like babs, post new babs, view the babs of friends, or search for babs by username or substrings contained in babs. Users can even edit their profiles, by changing their username. Users can also view their followers.
+Our team developed an application that allows YOU to _BAB_ with friends! Our app allows anyone to log in with an account or register a new account. Our app offers a profile for users to view, the ability to like babs, post new babs, view the babs of friends, or search for babs by username or substrings contained in babs. Users can even edit their profiles, by changing their username. Users can also view their followers.
 
 ### How to run the app
 -----------------------------------------
