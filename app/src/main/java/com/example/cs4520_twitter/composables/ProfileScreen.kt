@@ -85,8 +85,6 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController:
                 babColumn          // list of THIS user's babs
             ) = createRefs()
 
-            var userDescText by remember { mutableStateOf(userProfile.description) }
-
             Box(modifier = Modifier // this is the white banner, has the screen's width
                 .fillMaxWidth()
                 .background(Color.White)
@@ -170,7 +168,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController:
             // Num. of Posts text
             val profileBabCount = userProfile.babCount
             Text(
-                "Babs: $profileBabCount",
+                "Babs: ${babs.size}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -183,7 +181,9 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController:
                     })
             // Button for editing profile
             Button(
-                onClick = {},
+                onClick = {
+                          navController.navigate(NavigationItem.EditProfile.route)
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -230,19 +230,8 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController:
                 )
             }
             // user desc.
-            TextField(
-                value = userDescText,
-                onValueChange = { userDescText = it },
-                enabled = false, // uncomment this to allow users to type
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    disabledContainerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
+            Text(
+                text = userProfile.description,
                 modifier = Modifier
                     .height(60.dp)
                     .width(350.dp)

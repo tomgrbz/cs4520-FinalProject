@@ -14,6 +14,7 @@ import com.example.cs4520_twitter.composables.SearchScreen
 import com.example.cs4520_twitter.composables.AddBabScreen
 
 import com.example.cs4520_twitter.composables.BabFeed
+import com.example.cs4520_twitter.composables.EditProfileScreen
 
 import com.example.cs4520_twitter.composables.LoginScreen
 import com.example.cs4520_twitter.composables.UserProfileScreen
@@ -57,7 +58,7 @@ fun AppNavHost(
             UserProfileScreen(navController = navController) // currently uses dummy data
         }
         composable(NavigationItem.EditProfile.route) {
-//            LoginScreen(navController)
+            EditProfileScreen(navController = navController)
         }
         composable(NavigationItem.Search.route) {
             SearchScreen()
