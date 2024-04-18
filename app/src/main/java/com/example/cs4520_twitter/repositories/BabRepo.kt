@@ -1,6 +1,7 @@
 package com.example.cs4520_twitter.repositories
 
 import com.example.cs4520_twitter.data_layer.api.BabApi
+import com.example.cs4520_twitter.data_layer.api.models.AddBabRequest
 import com.example.cs4520_twitter.data_layer.api.models.AddBabResponse
 import com.example.cs4520_twitter.data_layer.api.models.LikesResponse
 import com.example.cs4520_twitter.data_layer.api.models.RandomBabsResponse
@@ -70,7 +71,7 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
     }
 
     override suspend fun addBab(userID: UUID, content: String): AddBabResponse {
-        val response = api.addBab(userID, content)
+        val response = api.addBab(userID, AddBabRequest(content))
         this.insertBab(response.bab)
         return response
     }
