@@ -15,6 +15,5 @@ data class UserEntity(
     val userID: String = UUID.randomUUID().toString(),
     val username: String,
     val password: String,
-    @ColumnInfo(name = "image_href")
-    val imageHref: String,
+    val imgHref: String,
 )

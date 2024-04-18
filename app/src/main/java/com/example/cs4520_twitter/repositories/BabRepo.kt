@@ -14,15 +14,16 @@ interface BabRepository {
 
     suspend fun insertBab(bab: BabEntity)
 
-    suspend fun getAllBabsByUser(userID: String): List<BabEntity?>
+    suspend fun getAllBabsByUser(userID: String): List<BabEntity>?
 
     suspend fun deleteBabById(babId: String)
 
-    suspend fun searchBabsWithString(searchQuery: String): List<BabEntity?>
+    suspend fun searchBabsWithString(searchQuery: String): List<BabEntity>?
 
     suspend fun getRandomBabs(): RandomBabsResponse
 
     suspend fun addBab(userID: UUID, content: String): AddBabResponse
+
 }
 
 /**
@@ -40,7 +41,7 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
         return babDao.insert(bab)
     }
 
-    override suspend fun getAllBabsByUser(userID: String): List<BabEntity?> {
+    override suspend fun getAllBabsByUser(userID: String): List<BabEntity>? {
         return babDao.getAllFromUserByUserID(userID)
     }
 
@@ -56,8 +57,8 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
         }
     }
 
-    override suspend fun searchBabsWithString(searchQuery: String): List<BabEntity?> {
-        return babDao.searchBabsWithString(searchQuery)
+    override suspend fun searchBabsWithString(searchQuery: String): List<BabEntity>? {
+        return this.getRandomBabs().babs.filter { b -> b.content.contains(searchQuery) }
     }
 
     override suspend fun getRandomBabs(): RandomBabsResponse {
@@ -65,11 +66,17 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
          for(bab in response.babs) {
              this.insertBab(bab)
          }
-        return response
+        val babsFromDB = babDao.getAllBabs()
+        return if (babsFromDB.isNullOrEmpty()) {
+            response
+        } else {
+            RandomBabsResponse(babsFromDB)
+        }
     }
 
     override suspend fun addBab(userID: UUID, content: String): AddBabResponse {
         val response = api.addBab(userID, AddBabRequest(content))
+
         this.insertBab(response.bab)
         return response
     }

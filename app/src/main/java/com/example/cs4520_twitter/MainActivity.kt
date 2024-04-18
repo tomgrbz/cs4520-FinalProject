@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.nav.AppNavHost
 import com.example.cs4520_twitter.nav.NavBar
 import com.example.cs4520_twitter.nav.NavigationItem
@@ -25,6 +26,9 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var appContainer = (application as BabbleApplication).appContainer
+        application?.applicationContext?.let { appContainer.createLocalDataSource(it) }
+        application?.applicationContext?.let { appContainer.createBabRepo(it) }
         setContent {
             MaterialTheme {
                 var navController = rememberNavController()
