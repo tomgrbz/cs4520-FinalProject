@@ -58,6 +58,14 @@ fun BabCard(bab : BabEntity) {
     // As of now, the card does not update with clicks but I think that's because the BabCard
     // is passed the bab once, which does not update
 
+    // pass the bab count to VM
+    viewModel.setBabLikeCount(bab.likes)
+    val newBabCount by viewModel.babLikeCount.collectAsState()
+
+    // pass the bab like user list to VM
+    viewModel.setUsersThatLiked(bab.likedUserList.toMutableList())
+    val newLikeUsersList by viewModel.listUsersThatLiked.collectAsState()
+
     Card(modifier = Modifier
         .fillMaxWidth()
         .height((maxHeight * 0.2).dp)
@@ -68,7 +76,9 @@ fun BabCard(bab : BabEntity) {
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
-            ConstraintLayout (modifier = Modifier.fillMaxWidth().height((maxHeight * 0.2).dp)) {
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight * 0.2).dp)) {
                 val (date, username, content, likes, userIcon, heart) = createRefs()
                 GlideImage( // this is the icon image of the user who babbled
                     model = dummyImageURL,
@@ -113,7 +123,7 @@ fun BabCard(bab : BabEntity) {
                 })
 
                 // display number of likes
-                Text("Likes: " + bab.likes.toString(),
+                Text("Likes: " + newBabCount.toString(),
                     color = blue,
                     fontSize = 14.sp,
                     modifier = Modifier.constrainAs(likes) {
@@ -130,8 +140,8 @@ fun BabCard(bab : BabEntity) {
                         absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
                     })
 
-                val userLikedBab = bab.likedUserList.contains(userProfile.user.userID) // did the logged user like this bab?
-                val isLiked = remember { mutableStateOf(userLikedBab) } // is bab liked?
+                val userLikedBab = newLikeUsersList.contains(userProfile.user.userID) // did the logged user like this bab?
+                val isLiked = remember {mutableStateOf(userLikedBab)} // is bab liked?
                 IconToggleButton( // the like button
                     modifier = Modifier.constrainAs(heart) {
                         top.linkTo(parent.bottom, margin = (-40).dp)
