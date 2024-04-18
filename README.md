@@ -1,3 +1,7 @@
+Github repository Link: https://github.com/tomgrbz/cs4520-FinalProject
+API Link: https://github.com/tomgrbz/cs4520-backend-api
+
+
 ### How to run the app
 -----------------------------------------
 - Upon opening the application, you will be shown the log in screen. 
