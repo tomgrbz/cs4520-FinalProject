@@ -122,6 +122,40 @@ fun BabCard(bab : BabEntity) {
                                     margin = (10).dp
                                 )
                             })
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight * 0.2).dp)) {
+                val (date, username, content, deleteBtn, likes, userIcon, heart) = createRefs()
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight * 0.2).dp)) {
+                val (date, username, content, likes, userIcon, heart) = createRefs()
+                GlideImage( // this is the icon image of the user who babbled
+                    model = dummyImageURL,
+                    contentScale = ContentScale.Crop,
+                    loading = placeholder(ColorPainter(Color.White)),
+                    failure = placeholder(ColorPainter(Color.White)),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(60.dp) // hardcoded icon dim.'s, etc.
+                        .shadow(
+                            elevation = 5.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = blue,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .constrainAs(userIcon) {
+                            // halfway icon height
+                            top.linkTo(parent.top, margin = (maxHeight * 0.1 - 65).dp)
+                            // Place icon midway the screen's width
+                            absoluteLeft.linkTo(
+                                parent.absoluteLeft,
+                                margin = (10).dp
+                            )
+                        })
 
                     // display the babbler or user name
                     Text("@" + bab.authorUser.username,
