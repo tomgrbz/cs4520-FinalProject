@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -80,6 +82,10 @@ fun BabCard(bab : BabEntity) {
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight * 0.2).dp)) {
+                val (date, username, content, deleteBtn, likes, userIcon, heart) = createRefs()
             ConstraintLayout (modifier = Modifier
                 .fillMaxWidth()
                 .height((maxHeight * 0.2).dp)) {
