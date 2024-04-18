@@ -59,7 +59,7 @@ API Link: https://github.com/tomgrbz/cs4520-backend-api
 - This screen allows you to change the user's username or profile description.
 - Enter the new text and then click on the save button. To return to the profile, click the 'return to profile' button.
 
-![img_1.png](photos/babble_feed.png)
+![img_1.png](photos/edit_screen.png)
 
 
 
