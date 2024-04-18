@@ -213,7 +213,7 @@ fun EditProfileScreen(navController: NavController) {
 
             // Num. of Posts text
             Text(
-                "Babs: ${userProfile?.babCount}",
+                "Babs: ${babs.size}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -309,7 +309,7 @@ fun EditProfileScreen(navController: NavController) {
                 items(
                     count = babs.size,
                     itemContent = { index ->
-                        BabCard(babs[index], editMode = true)
+                        BabCard(babs[index])
                     }
                 )
             }

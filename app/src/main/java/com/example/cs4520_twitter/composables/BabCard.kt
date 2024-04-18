@@ -55,7 +55,8 @@ fun BabCard(bab : BabEntity) {
     val maxHeight = configuration.screenHeightDp
     val viewModel: BabCardViewModel = BabCardViewModel(
         Api.babsApiService,
-        Api.profilesApiService)
+        Api.profilesApiService
+    )
 
     viewModel.fetchLoggedInUserProfile() // fetch user profile
     val userProfile by viewModel.loggedInProfile.collectAsState() // logged in user profile
@@ -72,107 +73,117 @@ fun BabCard(bab : BabEntity) {
     viewModel.setUsersThatLiked(bab.likedUserList.toMutableList())
     val newLikeUsersList by viewModel.listUsersThatLiked.collectAsState()
 
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .height((maxHeight * 0.2).dp)
-        .padding(horizontal = 8.dp, vertical = 8.dp),
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height((maxHeight * 0.2).dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Row {
-            ConstraintLayout (modifier = Modifier
-                .fillMaxWidth()
-                .height((maxHeight * 0.2).dp)) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height((maxHeight * 0.2).dp)
+            ) {
                 val (date, username, content, deleteBtn, likes, userIcon, heart) = createRefs()
-            ConstraintLayout (modifier = Modifier
-                .fillMaxWidth()
-                .height((maxHeight * 0.2).dp)) {
-                val (date, username, content, likes, userIcon, heart) = createRefs()
-                GlideImage( // this is the icon image of the user who babbled
-                    model = dummyImageURL,
-                    contentScale = ContentScale.Crop,
-                    loading = placeholder(ColorPainter(Color.White)),
-                    failure = placeholder(ColorPainter(Color.White)),
-                    contentDescription = "",
+                ConstraintLayout(
                     modifier = Modifier
-                        .size(60.dp) // hardcoded icon dim.'s, etc.
-                        .shadow(
-                            elevation = 5.dp,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = blue,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .constrainAs(userIcon) {
-                            // halfway icon height
-                            top.linkTo(parent.top, margin = (maxHeight * 0.1 - 65).dp)
-                            // Place icon midway the screen's width
-                            absoluteLeft.linkTo(
-                                parent.absoluteLeft,
-                                margin = (10).dp
+                        .fillMaxWidth()
+                        .height((maxHeight * 0.2).dp)
+                ) {
+                    val (date, username, content, likes, userIcon, heart) = createRefs()
+                    GlideImage( // this is the icon image of the user who babbled
+                        model = dummyImageURL,
+                        contentScale = ContentScale.Crop,
+                        loading = placeholder(ColorPainter(Color.White)),
+                        failure = placeholder(ColorPainter(Color.White)),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(60.dp) // hardcoded icon dim.'s, etc.
+                            .shadow(
+                                elevation = 5.dp,
+                                shape = RoundedCornerShape(10.dp)
                             )
+                            .border(
+                                width = 1.dp,
+                                color = blue,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .constrainAs(userIcon) {
+                                // halfway icon height
+                                top.linkTo(parent.top, margin = (maxHeight * 0.1 - 65).dp)
+                                // Place icon midway the screen's width
+                                absoluteLeft.linkTo(
+                                    parent.absoluteLeft,
+                                    margin = (10).dp
+                                )
+                            })
+
+                    // display the babbler or user name
+                    Text("@" + bab.authorUser.username,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.constrainAs(username) {
+                            bottom.linkTo(userIcon.top, margin = (-15).dp)
+                            absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
                         })
 
-                // display the babbler or user name
-                Text("@" + bab.authorUser.username,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.constrainAs(username) {
-                        bottom.linkTo(userIcon.top, margin = (-15).dp)
+                    // display bab text
+                    Text(bab.content, modifier = Modifier.constrainAs(content) {
+                        top.linkTo(username.bottom)
                         absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
                     })
 
-                // display bab text
-                Text(bab.content, modifier = Modifier.constrainAs(content) {
-                    top.linkTo(username.bottom)
-                    absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
-                })
+                    // display number of likes
+                    Text("Likes: " + newBabCount.toString(),
+                        color = blue,
+                        fontSize = 14.sp,
+                        modifier = Modifier.constrainAs(likes) {
+                            top.linkTo(parent.bottom, margin = (-20).dp)
+                            absoluteLeft.linkTo(parent.absoluteLeft, margin = 20.dp)
+                        })
 
-                // display number of likes
-                Text("Likes: " + newBabCount.toString(),
-                    color = blue,
-                    fontSize = 14.sp,
-                    modifier = Modifier.constrainAs(likes) {
-                        top.linkTo(parent.bottom, margin = (-20).dp)
-                        absoluteLeft.linkTo(parent.absoluteLeft, margin = 20.dp)
-                    })
+                    // Display Date
+                    Text("Date: " + android.text.format.DateFormat.format(
+                        "MMM. dd, yyyy",
+                        bab.date
+                    ),
+                        color = blue,
+                        fontSize = 14.sp,
+                        modifier = Modifier.constrainAs(date) {
+                            top.linkTo(parent.bottom, margin = (-20).dp)
+                            absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
+                        })
 
-                // Display Date
-                Text("Date: " + android.text.format.DateFormat.format("MMM. dd, yyyy", bab.date),
-                    color = blue,
-                    fontSize = 14.sp,
-                    modifier = Modifier.constrainAs(date) {
-                        top.linkTo(parent.bottom, margin = (-20).dp)
-                        absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
-                    })
-
-                val userLikedBab = newLikeUsersList.contains(userProfile.user.userID) // did the logged user like this bab?
-                val isLiked = remember {mutableStateOf(userLikedBab)} // is bab liked?
-                IconToggleButton( // the like button
-                    modifier = Modifier.constrainAs(heart) {
-                        top.linkTo(parent.bottom, margin = (-40).dp)
-                        absoluteLeft.linkTo(date.absoluteRight, margin = 1.dp)
-                    },
-                    checked = isLiked.value,
-                    onCheckedChange = {
-                        isLiked.value = !isLiked.value // change to unlike/like
-                        if (isLiked.value) { // update the api
-                            viewModel.likeBab(bab.babID)
-                        } else {
-                            viewModel.unLikeBab(bab.babID)
-                        }
-                    }) {
-                    Icon(
-                        imageVector = if (isLiked.value) Icons.Filled.Favorite
-                        else Icons.Filled.FavoriteBorder,
-                        tint = darkerPink,
-                        contentDescription = "Heart/Like Icon",
-                        modifier = Modifier.size(25.dp)
-                    )
+                    val userLikedBab =
+                        newLikeUsersList.contains(userProfile.user.userID) // did the logged user like this bab?
+                    val isLiked = remember { mutableStateOf(userLikedBab) } // is bab liked?
+                    IconToggleButton( // the like button
+                        modifier = Modifier.constrainAs(heart) {
+                            top.linkTo(parent.bottom, margin = (-40).dp)
+                            absoluteLeft.linkTo(date.absoluteRight, margin = 1.dp)
+                        },
+                        checked = isLiked.value,
+                        onCheckedChange = {
+                            isLiked.value = !isLiked.value // change to unlike/like
+                            if (isLiked.value) { // update the api
+                                viewModel.likeBab(bab.babID)
+                            } else {
+                                viewModel.unLikeBab(bab.babID)
+                            }
+                        }) {
+                        Icon(
+                            imageVector = if (isLiked.value) Icons.Filled.Favorite
+                            else Icons.Filled.FavoriteBorder,
+                            tint = darkerPink,
+                            contentDescription = "Heart/Like Icon",
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
                 }
             }
         }
