@@ -34,7 +34,7 @@
 ### Edit Screen
 -----------------------------------------
 - This screen allows you to change the user's username or profile description.
-- 
+- Enter the new text and then click on the save button. To return to the profile, click the 'return to profile' button.
 
 
 
