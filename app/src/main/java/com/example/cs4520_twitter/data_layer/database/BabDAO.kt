@@ -2,6 +2,7 @@ package com.example.cs4520_twitter.data_layer.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 /**
@@ -9,7 +10,7 @@ import androidx.room.Query
  */
 @Dao
 interface BabDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(bab: BabEntity)
 
     /**
@@ -17,6 +18,9 @@ interface BabDao {
      */
     @Query("SELECT * FROM babs WHERE babID = :babId")
     suspend fun getBabById(babId: String): BabEntity?
+
+    @Query("SELECT * FROM babs")
+    suspend fun getAllBabs(): List<BabEntity>?
 
     /**
      * Gets all babs associated with given user id

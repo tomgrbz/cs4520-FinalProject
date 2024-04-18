@@ -8,12 +8,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.BabApi
 import com.example.cs4520_twitter.data_layer.database.BabEntity
+import com.example.cs4520_twitter.repositories.BabRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class BabFeedViewModel(private val babApi : BabApi) : ViewModel() {
+class BabFeedViewModel(private val babRepo: BabRepository) : ViewModel() {
 
 
     private val _babList = MutableStateFlow<List<BabEntity>>(emptyList())
@@ -27,7 +28,7 @@ class BabFeedViewModel(private val babApi : BabApi) : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val resp = babApi.getRandomBabs()
+                val resp = babRepo.getRandomBabs()
                 Log.i("BabFeedViewModel", "Fetched random babs.")
                 _babList.value = resp.babs
 
@@ -44,7 +45,7 @@ class BabFeedViewModel(private val babApi : BabApi) : ViewModel() {
 
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return BabFeedViewModel((application as BabbleApplication).appContainer.babsService) as T
+                return BabFeedViewModel((application as BabbleApplication).appContainer.babRepo) as T
             }
         }
     }
