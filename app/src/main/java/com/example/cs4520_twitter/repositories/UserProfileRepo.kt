@@ -1,6 +1,7 @@
 package com.example.cs4520_twitter.repositories
 
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
+import com.example.cs4520_twitter.data_layer.api.models.GetProfileResponse
 import com.example.cs4520_twitter.data_layer.database.AppDatabase
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
@@ -26,16 +27,11 @@ class UserProfileRepo(private val db : AppDatabase, private val api : ProfilesAp
     override suspend fun getUserProfile(userID:String) : UserProfileEntity? {
         return try {
             val userId = UUID.fromString(userID)
-            val apiResult: Response<UserProfileEntity> = api.getUserProfile(userId)
+            val apiResult: GetProfileResponse = api.getUserProfile(userId)
 
-            if (apiResult.isSuccessful) {
-                this.insertUserProfile(apiResult.body())
-                apiResult.body() // Assuming the body contains UserProfileEntity
-            } else {
-                // if API Call does not work
-                val response = userProfileDao.getUserProfileById(userID)
-                this.insertUserProfile(response)
-                userProfileDao.getUserProfileById(userID)
+            run {
+                this.insertUserProfile(apiResult.profile)
+                apiResult.profile // assuming contains UserProfileEntity
             }
 
         } catch (e: Exception) {
