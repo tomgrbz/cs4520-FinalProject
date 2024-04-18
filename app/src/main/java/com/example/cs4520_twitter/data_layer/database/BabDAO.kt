@@ -26,11 +26,11 @@ interface BabDao {
      * Gets all babs associated with given user id
      */
     @Query("SELECT * FROM babs WHERE user_userID = :userID")
-    suspend fun getAllFromUserByUserID(userID: String): List<BabEntity?>
+    suspend fun getAllFromUserByUserID(userID: String): List<BabEntity>?
 
     @Query("DELETE FROM babs WHERE babID = :babId")
     suspend fun deleteById(babId: String)
 
     @Query("SELECT * FROM babs WHERE content LIKE :searchQuery")
-    suspend fun searchBabsWithString(searchQuery: String): List<BabEntity?>
+    suspend fun searchBabsWithString(searchQuery: String): List<BabEntity>?
 }
