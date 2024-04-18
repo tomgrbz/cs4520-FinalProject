@@ -12,12 +12,12 @@ API Link: https://github.com/tomgrbz/cs4520-backend-api
 - Either log in with valid credentials (you can use "ben10" as the username and "qwerty" as the password)
  or register a new account by clicking on the "Click to sign up!" text.
 
-  ![img_1.png](click_to_register.png)
+  ![img_1.png](photos/click_to_register.png)
 - 
-  ![img_1.png](register_screen.png)
+  ![img_1.png](photos/register_screen.png)
 
 - After logging in, you will be automatically navigated to the bab feed screen.
-![img_1.png](babble_feed.png)
+![img_1.png](photos/babble_feed.png)
 
 ### Bab Feed Screen
 -----------------------------------------
