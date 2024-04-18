@@ -1,31 +1,40 @@
-### Using the app
+### How to run the app
 -----------------------------------------
-- To use the app, please first log in with valid credentials to access the profile screen.
-- I can log in with users like 'ben10' and '#1pokemonfan' and I can navigate to profile which loads correctly.
+- Upon opening the application, you will be shown the log in screen. 
 
-![Alt text](profile_works_for_existing_users.png)
+![img.png](photo/login_screen.png)
 
-- (More minor) But I think there may be an issue with the "testuser" user's userID (it's 123). I get an error at line "UUID.fromString(LoggedInUser.loggedInUserId)" saying that testuser has an invalid UUID string after logging in and navigating to the profile.
-- (More minor) I also think there may be an issue with the image URL's from the API's users, it gives me res/bear when I obtain it. I'm just loading all images with the dummyURL
 
-![Alt text](uuid_error_for_testuser.png)
+- Either log in with valid credentials (you can use "ben10" as the username and "qwerty" as the password)
+ or register a new account by clicking on the "Click to sign up!" text.
 
-### Registration page
+- After logging in, you will be automatically navigated to the bab feed screen.
+![img_1.png](img_1.png)
+
+### Bab Feed Screen
 -----------------------------------------
-![Alt text](registration.png)
+- This feed screen should show a random number of babs from random users.
+- Bab posts have the user information, with the number of likes and date.
 
-BabFeedScreen
----------------------
-![alt text](babble_feed_photo.png)
-
-
-ProfileScreen
+### Navigation Bar
 -----------------------------------------
+- At the bottom of all screens beside login is the navigation bar.
 
-![Alt text](profile_screen_photo.png)
+### Add Bab Screen 
+-----------------------------------------
+- To use this screen, first enter a nonempty string in the text field and click the post button
 
 
-![Alt text](opening_screen.png)
+### Profile Screen
+-----------------------------------------
+- The profile screen shows the logged in user's information, including their posts. There are also two buttons:
+- One with "my followers" to navigate to the my followers screen.
+- Another with "edit" to navigate to the edit screen.
 
-![Alt text](opening_screen.png)
+### Edit Screen
+-----------------------------------------
+- This screen allows you to change the user's username or profile description.
+- 
+
+
 
