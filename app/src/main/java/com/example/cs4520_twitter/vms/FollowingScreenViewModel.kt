@@ -10,6 +10,7 @@ import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.FollowsApi
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
 import com.example.cs4520_twitter.data_layer.api.UsersApi
+import com.example.cs4520_twitter.data_layer.api.models.UserIDBodyRequest
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +41,7 @@ class FollowingScreenViewModel(
 
         viewModelScope.launch {
             try {
-                val resp = followApi.unfollowUser(toUnfollowUUID, loggedUUID)
+                val resp = followApi.unfollowUser(toUnfollowUUID, UserIDBodyRequest(loggedUUID.toString()))
                 Log.i("FollowingScreenViewModel", "Successful unfollowing of $toUnfollowUUID")
                 fetchData()
             } catch (e: Exception) {

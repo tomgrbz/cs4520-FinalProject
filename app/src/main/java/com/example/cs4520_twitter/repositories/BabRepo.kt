@@ -23,7 +23,7 @@ interface BabRepository {
     suspend fun getRandomBabs(): RandomBabsResponse
 
     suspend fun addBab(userID: UUID, content: String): AddBabResponse
-    
+
 }
 
 /**
