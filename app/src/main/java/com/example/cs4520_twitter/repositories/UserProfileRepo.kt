@@ -29,9 +29,14 @@ class UserProfileRepo(private val db : AppDatabase, private val api : ProfilesAp
             val userId = UUID.fromString(userID)
             val apiResult: GetProfileResponse = api.getUserProfile(userId)
 
-            run {
+            if (apiResult != null) {
                 this.insertUserProfile(apiResult.profile)
-                apiResult.profile // assuming contains UserProfileEntity
+                apiResult.profile // Assuming the body contains UserProfileEntity
+            } else {
+                // if API Call does not work
+                val response = userProfileDao.getUserProfileById(userID)
+                this.insertUserProfile(response)
+                userProfileDao.getUserProfileById(userID)
             }
 
         } catch (e: Exception) {
