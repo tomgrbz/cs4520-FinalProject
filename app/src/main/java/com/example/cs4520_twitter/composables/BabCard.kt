@@ -35,6 +35,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.example.cs4520_twitter.application.BabbleApplication
+import com.example.cs4520_twitter.data_layer.api.Api
 import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.ui.theme.blue
@@ -49,7 +51,9 @@ import java.text.DateFormat
 fun BabCard(bab : BabEntity) {
     val configuration = LocalConfiguration.current // for screen dimensions
     val maxHeight = configuration.screenHeightDp
-    val viewModel: BabCardViewModel = viewModel(factory = BabCardViewModel.Factory)
+    val viewModel: BabCardViewModel = BabCardViewModel(
+        Api.babsApiService,
+        Api.profilesApiService)
 
     viewModel.fetchLoggedInUserProfile() // fetch user profile
     val userProfile by viewModel.loggedInProfile.collectAsState() // logged in user profile
