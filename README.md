@@ -36,6 +36,7 @@ API Link: https://github.com/tomgrbz/cs4520-backend-api
 - To search for specific babs, enter some criteria in the search field. You can search babs by username (e.g "ben10") or by specific keywords/substring in bab posts.
 
   ![img_1.png](photos/search.png)
+  ![img_1.png](photos/search_result.png)
 
 
 ### Add Bab Screen 
