@@ -19,6 +19,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,21 +33,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.example.cs4520_twitter.application.BabbleApplication
+import com.example.cs4520_twitter.data_layer.api.Api
 import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerPink
+import com.example.cs4520_twitter.vms.BabCardViewModel
+import com.example.cs4520_twitter.vms.LoginViewModel
 import java.text.DateFormat
 
 // Bab card for Bab list. Currently Uses dummy data for the Image URL.
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun BabCard(bab : BabEntity, editMode: Boolean = false) {
+fun BabCard(bab : BabEntity) {
     val configuration = LocalConfiguration.current // for screen dimensions
     val maxHeight = configuration.screenHeightDp
+    val viewModel: BabCardViewModel = BabCardViewModel(
+        Api.babsApiService,
+        Api.profilesApiService)
+
+    viewModel.fetchLoggedInUserProfile() // fetch user profile
+    val userProfile by viewModel.loggedInProfile.collectAsState() // logged in user profile
+
+    // TODO: Do we need the view model have the api re-obtain the bab information?
+    // As of now, the card does not update with clicks but I think that's because the BabCard
+    // is passed the bab once, which does not update
+
+    // pass the bab count to VM
+    viewModel.setBabLikeCount(bab.likes)
+    val newBabCount by viewModel.babLikeCount.collectAsState()
+
+    // pass the bab like user list to VM
+    viewModel.setUsersThatLiked(bab.likedUserList.toMutableList())
+    val newLikeUsersList by viewModel.listUsersThatLiked.collectAsState()
+
     Card(modifier = Modifier
         .fillMaxWidth()
         .height((maxHeight * 0.2).dp)
@@ -60,6 +86,10 @@ fun BabCard(bab : BabEntity, editMode: Boolean = false) {
                 .fillMaxWidth()
                 .height((maxHeight * 0.2).dp)) {
                 val (date, username, content, deleteBtn, likes, userIcon, heart) = createRefs()
+            ConstraintLayout (modifier = Modifier
+                .fillMaxWidth()
+                .height((maxHeight * 0.2).dp)) {
+                val (date, username, content, likes, userIcon, heart) = createRefs()
                 GlideImage( // this is the icon image of the user who babbled
                     model = dummyImageURL,
                     contentScale = ContentScale.Crop,
@@ -96,20 +126,6 @@ fun BabCard(bab : BabEntity, editMode: Boolean = false) {
                         absoluteLeft.linkTo(userIcon.absoluteRight, margin = 5.dp)
                     })
 
-                if (editMode) {
-                    IconButton(onClick = { /*TODO*/ },
-                        modifier = Modifier.constrainAs(deleteBtn) {
-                            top.linkTo(parent.top, margin = 5.dp)
-                            absoluteRight.linkTo(parent.absoluteRight, margin = 5.dp)
-                        },
-                    ) {
-                        Icon(Icons.Filled.Close,
-                            "delete bab",
-                            Modifier.size(25.dp),
-                            Color.Red,
-                        )
-                    }
-                }
                 // display bab text
                 Text(bab.content, modifier = Modifier.constrainAs(content) {
                     top.linkTo(username.bottom)
@@ -117,7 +133,7 @@ fun BabCard(bab : BabEntity, editMode: Boolean = false) {
                 })
 
                 // display number of likes
-                Text("Likes: " + bab.likes.toString(),
+                Text("Likes: " + newBabCount.toString(),
                     color = blue,
                     fontSize = 14.sp,
                     modifier = Modifier.constrainAs(likes) {
@@ -134,7 +150,8 @@ fun BabCard(bab : BabEntity, editMode: Boolean = false) {
                         absoluteLeft.linkTo(likes.absoluteRight, margin = 10.dp)
                     })
 
-                val isLiked = remember { mutableStateOf(false) } // is bab liked?
+                val userLikedBab = newLikeUsersList.contains(userProfile.user.userID) // did the logged user like this bab?
+                val isLiked = remember {mutableStateOf(userLikedBab)} // is bab liked?
                 IconToggleButton( // the like button
                     modifier = Modifier.constrainAs(heart) {
                         top.linkTo(parent.bottom, margin = (-40).dp)
@@ -142,7 +159,13 @@ fun BabCard(bab : BabEntity, editMode: Boolean = false) {
                     },
                     checked = isLiked.value,
                     onCheckedChange = {
-                        isLiked .value= !isLiked.value}) {
+                        isLiked.value = !isLiked.value // change to unlike/like
+                        if (isLiked.value) { // update the api
+                            viewModel.likeBab(bab.babID)
+                        } else {
+                            viewModel.unLikeBab(bab.babID)
+                        }
+                    }) {
                     Icon(
                         imageVector = if (isLiked.value) Icons.Filled.Favorite
                         else Icons.Filled.FavoriteBorder,
