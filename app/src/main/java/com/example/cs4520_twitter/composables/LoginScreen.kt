@@ -1,5 +1,6 @@
 package com.example.cs4520_twitter.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -33,14 +36,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.cs4520_twitter.app_state.LoggedInUser
+import com.example.cs4520_twitter.nav.NavigationItem
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.example.cs4520_twitter.ui.theme.darkerBlue
 import com.example.cs4520_twitter.vms.LoginViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     val configuration = LocalConfiguration.current // for obtaining screen dimensions
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
@@ -51,7 +56,13 @@ fun LoginScreen() {
 
     // Use to show a loading animation while making api calls
     val isLoading by viewModel.isLoading.collectAsState()
+    val success by viewModel.success.collectAsState()
 
+    if (success) {
+        LaunchedEffect(Unit) {
+            navController.navigate(NavigationItem.Feed.route)
+        }
+    }
     Box(modifier = with(Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
     })
@@ -143,13 +154,20 @@ fun LoginScreen() {
                     })
 
             // Button for login
+            val context  = LocalContext.current
             Button(
                 onClick = {
                     if (inLoginMode) {
                         viewModel.login(usernameText, passwordText)
+                        usernameText = ""
+                        passwordText = ""
+                        Toast.makeText(context, "Attempted login", Toast.LENGTH_SHORT).show()
                     } else {
                         // otherwise, sign up. VM makes check if fields are blank or not
                         viewModel.signUp(usernameText, passwordText)
+                        usernameText = ""
+                        passwordText = ""
+                        Toast.makeText(context, "Attempted signup", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier

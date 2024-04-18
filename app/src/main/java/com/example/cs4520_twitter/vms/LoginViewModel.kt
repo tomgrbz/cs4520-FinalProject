@@ -1,8 +1,6 @@
 package com.example.cs4520_twitter.vms
 
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -17,11 +15,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val loginApi: LoginApi,
-                     private val signupApi : SignupApi) : ViewModel() {
+class LoginViewModel(
+    private val loginApi: LoginApi,
+    private val signupApi: SignupApi
+) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow<Boolean>(true);
+    private val _isLoading = MutableStateFlow<Boolean>(false);
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+
+    private val _success = MutableStateFlow<Boolean>(false);
+    val success: StateFlow<Boolean> get() = _success.asStateFlow()
 
     fun login(username: String, password: String) {
         // validate user credentials
@@ -30,10 +33,11 @@ class LoginViewModel(private val loginApi: LoginApi,
         viewModelScope.launch {
             try {
                 val resp = loginApi.login(CredentialsPostRequest(username, password))
-                Log.i("LoginViewModel", "Logged in $resp")
+
                 LoggedInUser.loggedInUserId = resp.user.userID
-            } catch (e: Exception) {
-                Log.e("LoginViewModel", "Failed to fetch resp due to $e")
+                _success.value = true
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -46,26 +50,29 @@ class LoginViewModel(private val loginApi: LoginApi,
             viewModelScope.launch {
                 try {
                     val resp = signupApi.signup(CredentialsPostRequest(username, password))
-                    Log.i("LoginViewModel", "Signed up in $resp")
-                    LoggedInUser.loggedInUserId = resp.user.userID // Automatically log them in?
-                } catch (e: Exception) {
-                    Log.e("LoginViewModel", "Failed to sign up due to $e")
+                    LoggedInUser.loggedInUserId = resp.user.userID
+                } finally {
+                    _isLoading.value = false
+
                 }
             }
-        } else {
-            Log.e("LoginViewModel", "Failed to sign up due to blank fields.")
         }
     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
 
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return LoginViewModel((application as BabbleApplication).appContainer.loginApiService,
-                    (application as BabbleApplication).appContainer.signupApiService) as T
+                return LoginViewModel(
+                    (application as BabbleApplication).appContainer.loginApiService,
+                    (application as BabbleApplication).appContainer.signupApiService
+                ) as T
             }
         }
     }

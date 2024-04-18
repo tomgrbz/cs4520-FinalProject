@@ -35,22 +35,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
+import com.example.cs4520_twitter.data_layer.database.dummyBabList
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
+import com.example.cs4520_twitter.data_layer.database.dummyUser
 import com.example.cs4520_twitter.data_layer.database.dummyUsername
+import com.example.cs4520_twitter.nav.NavigationItem
 import com.example.cs4520_twitter.vms.ProfileViewModel
 
 // File contains screen composable. Dummy data is imported from the database folder.
 @OptIn(ExperimentalGlideComposeApi::class)
-@Preview(showBackground = true)
 @Composable
-fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
+fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController: NavController) {
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
     val maxWidth = configuration.screenWidthDp
@@ -81,8 +84,6 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                 userDesc,
                 babColumn          // list of THIS user's babs
             ) = createRefs()
-
-            var userDescText by remember { mutableStateOf(userProfile.description) }
 
             Box(modifier = Modifier // this is the white banner, has the screen's width
                 .fillMaxWidth()
@@ -122,14 +123,14 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
             // Username text
             Log.i("ProfileScreen", "profile user is: " + userProfile.user.toString())
             Text(
-                userProfile.user.username,  // TODO: Error is here according to logs, for newly registered users, profile is fetched as null
+                userProfile.user.username,
                 fontSize = usernameSize.sp,
                 modifier = Modifier
                     .constrainAs(username) {
                         top.linkTo(userIcon.bottom, margin = (5).dp)
                         absoluteLeft.linkTo(
                             userBanner.absoluteLeft,
-                            margin = (maxWidth / 2 - (userProfile.user.username.length // TODO: Error is here according to logs
+                            margin = (maxWidth / 2 - (userProfile.user.username.length
                                     * (usernameSize / 2)) / 2).dp
                         )
                     })
@@ -167,7 +168,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
             // Num. of Posts text
             val profileBabCount = userProfile.babCount
             Text(
-                "Babs: $profileBabCount",
+                "Babs: ${babs.size}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
@@ -180,7 +181,9 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                     })
             // Button for editing profile
             Button(
-                onClick = {},
+                onClick = {
+                          navController.navigate(NavigationItem.EditProfile.route)
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -203,7 +206,9 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
             }
             // Button for viewing my followers
             Button(
-                onClick = {},
+                onClick = {
+                          navController.navigate(NavigationItem.Followers.route)
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -225,19 +230,8 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile) {
                 )
             }
             // user desc.
-            TextField(
-                value = userDescText,
-                onValueChange = { userDescText = it },
-                enabled = false, // uncomment this to allow users to type
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    disabledContainerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
+            Text(
+                text = userProfile.description,
                 modifier = Modifier
                     .height(60.dp)
                     .width(350.dp)

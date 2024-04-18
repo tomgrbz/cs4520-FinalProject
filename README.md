@@ -1,28 +1,71 @@
-<<<<<<< HEAD
-Add A Bab Screen:
-------------------------------
+Github repository Link: https://github.com/tomgrbz/cs4520-FinalProject
 
-### Adding a Bab error
-- First, logging in as "ben10".
-- Attempting to add a bab, I get error:
+API Link: https://github.com/tomgrbz/cs4520-backend-api
 
+## The Babble App
 
-![img.png](Navigating_to_add_screen.png)
+Our team developed an application that allows YOU to _BAB_ with friends! Our app allows anyone to log in with an account or register a new account. Our app offers a profile for users to view, the ability to like babs, post new babs, view the babs of friends, or search for babs by username or substrings contained in babs. Users can even edit their profiles, by changing their username or profile description. Users can also view their followers.
 
-![img_1.png](error.png)
-
-![img_2.png](example.png)
-
-BabFeedScreen
----------------------
-After resolving some conflicts, I able to navigate to the bab feed now.
-
-![alt text](babble_feed_photo.png)
-
-
-ProfileScreen
+### How to run the app
 -----------------------------------------
+- Upon opening the application, you will be shown the log in screen. 
 
-![Alt text](profile_screen_photo.png)
+![img.png](photos/login_screen.png)
 
-![Alt text](opening_screen.png
+
+- Either log in with valid credentials (you can use "ben10" as the username and "qwerty" as the password)
+ or register a new account by clicking on the "Click to sign up!" text.
+
+  ![img_1.png](photos/click_to_register.png)
+
+  ![img_1.png](photos/register_screen.png)
+
+- After logging in, you will be automatically navigated to the bab feed screen.
+
+![img_1.png](photos/babble_feed.png)
+
+### Bab Feed Screen
+-----------------------------------------
+- This feed screen should show a random number of babs from random users.
+- Bab posts have the user information, with the number of likes and date.
+
+
+  ![img_1.png](photos/babble_feed.png)
+
+### Navigation Bar
+-----------------------------------------
+- At the bottom of all screens beside login is the navigation bar.
+- Using this, you can navigate to the feed, add a bad, profile, and search screens.
+
+  ![img_1.png](photos/nav_bar.png)
+
+### Search Screen
+-----------------------------------------
+- To search for specific babs, enter some criteria in the search field. You can search babs by username (e.g "ben10") or by specific keywords/substring in bab posts.
+
+  ![img_1.png](photos/search.png)
+  ![img_1.png](photos/search_result.png)
+
+
+### Add Bab Screen 
+-----------------------------------------
+- To use this screen, first enter a nonempty string in the text field and click the post button
+
+![img_1.png](photos/add_bab.png)
+
+
+### Profile Screen
+-----------------------------------------
+- The profile screen shows the logged in user's information, including their posts. There are also two buttons:
+- One with "my followers" to navigate to the my followers screen.
+- Another with "edit" to navigate to the edit screen.
+
+![img_1.png](photos/profile.png)
+
+### Edit Screen
+-----------------------------------------
+- This screen allows you to change the user's username or profile description.
+- Enter the new text and then click on the save button. To return to the profile, click the 'return to profile' button.
+
+![img_1.png](photos/edit_screen.png)
+
