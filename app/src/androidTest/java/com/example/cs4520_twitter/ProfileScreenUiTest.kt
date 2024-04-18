@@ -21,7 +21,8 @@ class ProfileScreenUiTest {
                 MaterialTheme {
                     val navController = rememberNavController()
                     LoggedInUser.loggedInUserId = "eb1167b3-67a9-4378-bc65-c1e582e2e662"
-                    UserProfileScreen(navController = navController)
+                    UserProfileScreen(navController = rememberNavController())
+
                 }
             }
         }

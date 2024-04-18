@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.example.cs4520_twitter.data_layer.api.Api
 import com.example.cs4520_twitter.data_layer.database.AppDatabase
+import com.example.cs4520_twitter.repositories.BabRepo
+import com.example.cs4520_twitter.repositories.BabRepository
 
 /**
  * AppContainer that is shareable across view models for fetching data or updating data
@@ -23,6 +25,8 @@ class AppContainer {
 
     val usersApiService = Api.usersApiService
 
+    lateinit var babRepo: BabRepository
+
     // Client for local room database
     private lateinit var localDataSource: AppDatabase
 
@@ -38,6 +42,10 @@ class AppContainer {
     fun createLocalDataSource(context: Context) {
         localDataSource =
             Room.databaseBuilder(context, AppDatabase::class.java, "babbleDB").build()
+    }
+
+    fun createBabRepo(context: Context) {
+        babRepo = BabRepo(localDataSource, babsService)
     }
 
 //    fun createProductRepository(context: Context) {
