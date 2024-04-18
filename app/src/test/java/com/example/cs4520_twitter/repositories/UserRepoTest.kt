@@ -17,7 +17,6 @@ class UserRepoTest {
     private val mockDb = mock(AppDatabase::class.java)
     private val mockApi = mock(UsersApi::class.java)
 
-    // Create an instance of UserRepo with mock objects
     private val userRepo = UserRepo(mockDb, mockApi)
     private val mockUsers = listOf(
     UserEntity("user1", "User 1", "123", "123"),
@@ -34,7 +33,6 @@ class UserRepoTest {
     private val userIDs = listOf("1", "2", "3" )
 
     val followingResponse = UsersFollowingResponse(mockUsers, 3)
-
 
     @Test
     fun `test getUser should return user from database`() {
