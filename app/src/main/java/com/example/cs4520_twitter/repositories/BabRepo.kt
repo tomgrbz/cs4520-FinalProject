@@ -23,8 +23,7 @@ interface BabRepository {
     suspend fun getRandomBabs(): RandomBabsResponse
 
     suspend fun addBab(userID: UUID, content: String): AddBabResponse
-
-    suspend fun getUserBabs(babID: Int, userID: UUID): LikesResponse
+    
 }
 
 /**
@@ -76,12 +75,9 @@ class BabRepo(private val db : AppDatabase, private val api :BabApi ) : BabRepos
     }
 
     override suspend fun addBab(userID: UUID, content: String): AddBabResponse {
-        val response = api.addBab(userID, AddBabRequest( content))
+        val response = api.addBab(userID, AddBabRequest(content))
+
         this.insertBab(response.bab)
         return response
-    }
-
-    override suspend fun getUserBabs(babID: Int, userID: UUID): LikesResponse {
-        return api.getUserBabs(babID, userID)
     }
 }
