@@ -11,13 +11,14 @@ import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.BabApi
 import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.dummyBab
+import com.example.cs4520_twitter.repositories.BabRepo
+import com.example.cs4520_twitter.repositories.BabRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-val dummyBabList = listOf<BabEntity>(dummyBab)
-class SearchScreenViewModel(private val babApi: BabApi): ViewModel() {
+class SearchScreenViewModel(private val babApi: BabApi, private val babRepo: BabRepository): ViewModel() {
     private val _results = MutableStateFlow<List<BabEntity>>(emptyList())
     private val _loading = MutableStateFlow<Boolean>(false)
     val loading: StateFlow<Boolean> get() = _loading.asStateFlow()
@@ -31,11 +32,11 @@ class SearchScreenViewModel(private val babApi: BabApi): ViewModel() {
         _loading.value = true
         viewModelScope.launch {
             try {
-                val resp = babApi.getRandomBabs()
-                Log.i("BabFeedViewModel", "Fetched random babs.")
-                _results.value = resp.babs.filter { bab ->
-                    bab.content.contains(input) || bab.authorUser.username.contains(input)
+                val resp = babRepo.searchBabsWithString(input)
+                if (resp != null) {
+                    _results.value = resp
                 }
+                Log.i("BabFeedViewModel", "Search babs." + resp)
                 _loading.value = false
             } catch (e: Exception) {
                 Log.e("BabFeedViewModel", "Failed to fetch resp due to $e")
@@ -51,7 +52,8 @@ class SearchScreenViewModel(private val babApi: BabApi): ViewModel() {
 
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return SearchScreenViewModel((application as BabbleApplication).appContainer.babsService) as T
+                return SearchScreenViewModel((application as BabbleApplication).appContainer.babsService,
+                (application as BabbleApplication).appContainer.babRepo) as T
             }
         }
     }
