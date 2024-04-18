@@ -10,6 +10,8 @@ import com.example.cs4520_twitter.application.BabbleApplication
 import com.example.cs4520_twitter.data_layer.api.BabApi
 import com.example.cs4520_twitter.data_layer.api.ProfilesApi
 import com.example.cs4520_twitter.data_layer.api.UsersApi
+import com.example.cs4520_twitter.data_layer.api.models.EditDescriptionRequest
+import com.example.cs4520_twitter.data_layer.api.models.EditUsernameRequest
 import com.example.cs4520_twitter.data_layer.database.BabEntity
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
@@ -35,15 +37,29 @@ class EditProfileViewModel(val profileApi : ProfilesApi,
     fun updateDesc(newDesc: String) {
         viewModelScope.launch {
             try {
-                val resp = userApi
-                Log.i("ProfileViewModel", "Obtained logged in user profile " + resp)
+                val resp = profileApi.changeUserProfileDescription(loggedUUID,
+                    EditDescriptionRequest(newDesc)
+                )
+                Log.i("EditProfileViewModel", "Edited user desc " + resp)
             } catch (e: Exception) {
-                Log.e("ProfileViewModel", "Failed to fetch resp due to $e")
+                Log.e("EditProfileViewModel", "Failed to edit resp due to $e")
             }
         }
     }
 
-    fun updateName(newName: String) {}
+    fun updateName(newName: String) {
+        viewModelScope.launch {
+            try {
+                val resp = profileApi.changeUserProfileName(loggedUUID,
+                    EditUsernameRequest(newName)
+                )
+                Log.i("EditProfileViewModel", "Edited user name " + resp)
+            } catch (e: Exception) {
+                Log.e("EditProfileViewModel", "Failed to edit resp due to $e")
+            }
+        }
+
+    }
 
     fun toastMessage() {
 

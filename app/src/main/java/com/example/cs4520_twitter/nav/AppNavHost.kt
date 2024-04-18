@@ -58,7 +58,7 @@ fun AppNavHost(
             UserProfileScreen(navController = navController) // currently uses dummy data
         }
         composable(NavigationItem.EditProfile.route) {
-            EditProfileScreen()
+            EditProfileScreen(navController = navController)
         }
         composable(NavigationItem.Search.route) {
             SearchScreen()

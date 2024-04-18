@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.cs4520_twitter.ui.theme.backgroundBrushBlueYellowTheme
 import com.example.cs4520_twitter.ui.theme.blue
@@ -57,20 +58,21 @@ import com.example.cs4520_twitter.data_layer.database.dummyBab
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.data_layer.database.dummyProfile
 import com.example.cs4520_twitter.data_layer.database.dummyUsername
+import com.example.cs4520_twitter.nav.NavigationItem
 import com.example.cs4520_twitter.vms.EditProfileViewModel
 import com.example.cs4520_twitter.vms.ProfileViewModel
 
 // File contains screen composable. Dummy data is imported from the database folder.
 @OptIn(ExperimentalGlideComposeApi::class)
-@Preview(showBackground = true)
 @Composable
-fun EditProfileScreen() {
+fun EditProfileScreen(navController: NavController) {
     val viewModel: EditProfileViewModel = viewModel(factory = EditProfileViewModel.Factory)
     viewModel.fetchLoggedInUserProfile() // fetch user profile
     viewModel.fetchLoggedInUserBabs()    // fetch babs
 
     val babs by viewModel.babList.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()                // babs of this user profile
+    val isLoading by viewModel.isLoading.collectAsState()
+    // babs of this user profile
     // babs of this user profile
     val userProfile by viewModel.loggedInProfile.collectAsState() // user profile
 
@@ -82,8 +84,6 @@ fun EditProfileScreen() {
     val iconDim = maxWidth * 0.30 // around a third of the screen width
     val userNameFieldDim = maxWidth * .4
 
-    var usernameInput by remember { mutableStateOf(userProfile.user.username) }
-    var descriptionInput by remember { mutableStateOf(userProfile.description) }
 
     Box(modifier = with (Modifier) {
         fillMaxSize().background(backgroundBrushBlueYellowTheme)
@@ -102,8 +102,6 @@ fun EditProfileScreen() {
                 descSaveIcon,
                 babColumn          // list of THIS user's babs
             ) = createRefs()
-
-            var userDescText by remember { mutableStateOf("Hello!") }
 
             Box(modifier = Modifier // this is the white banner, has the screen's width
                 .fillMaxWidth()
@@ -143,6 +141,7 @@ fun EditProfileScreen() {
 
             // Username text
             if (!isLoading) {
+                var usernameInput by remember { mutableStateOf(userProfile.user.username) }
                 TextField(
                     value = usernameInput,
                     onValueChange = { value -> usernameInput = value },
@@ -227,7 +226,9 @@ fun EditProfileScreen() {
                     })
             // Button to return to profile
             Button(
-                onClick = {},
+                onClick = {
+                          navController.navigate(NavigationItem.Profile.route)
+                },
                 modifier = Modifier
                     .height(35.dp)
                     .width(110.dp)
@@ -249,10 +250,11 @@ fun EditProfileScreen() {
             }
 
             if (!isLoading) {
+                var descriptionInput by remember { mutableStateOf(userProfile.description) }
                 // user desc.
                 TextField(
-                    value = userDescText,
-                    onValueChange = { userDescText = it },
+                    value = descriptionInput,
+                    onValueChange = { descriptionInput = it },
                     maxLines = 4,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
