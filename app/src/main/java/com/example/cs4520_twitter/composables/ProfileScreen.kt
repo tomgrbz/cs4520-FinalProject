@@ -168,7 +168,7 @@ fun UserProfileScreen(profile : UserProfileEntity = dummyProfile, navController:
             // Num. of Posts text
             val profileBabCount = userProfile.babCount
             Text(
-                "Babs: $profileBabCount",
+                "Babs: ${babs.size}",
                 color = blue,
                 fontSize = dataTextSize.sp,
                 modifier = Modifier
