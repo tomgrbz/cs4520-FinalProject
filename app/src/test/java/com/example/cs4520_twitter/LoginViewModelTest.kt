@@ -7,7 +7,7 @@ import com.example.cs4520_twitter.data_layer.api.models.CredentialsPostRequest
 import com.example.cs4520_twitter.data_layer.api.models.CredentialsResponse
 import com.example.cs4520_twitter.data_layer.database.UserEntity
 import com.example.cs4520_twitter.vms.LoginViewModel
-
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
