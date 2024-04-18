@@ -41,7 +41,7 @@ class FollowingScreenViewModel(
 
         viewModelScope.launch {
             try {
-                val resp = followApi.unfollowUser(toUnfollowUUID, UserIDBodyRequest(loggedUUID.toString()))
+                val resp = followApi.unfollowUser(toUnfollowUUID, UserIDBodyRequest(LoggedInUser.loggedInUserId))
                 Log.i("FollowingScreenViewModel", "Successful unfollowing of $toUnfollowUUID")
                 fetchData()
             } catch (e: Exception) {

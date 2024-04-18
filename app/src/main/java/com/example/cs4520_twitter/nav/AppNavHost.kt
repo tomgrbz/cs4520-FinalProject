@@ -14,6 +14,7 @@ import com.example.cs4520_twitter.composables.SearchScreen
 import com.example.cs4520_twitter.composables.AddBabScreen
 
 import com.example.cs4520_twitter.composables.BabFeed
+import com.example.cs4520_twitter.composables.FollowingScreen
 import com.example.cs4520_twitter.composables.EditProfileScreen
 
 import com.example.cs4520_twitter.composables.LoginScreen
@@ -49,7 +50,7 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable(NavigationItem.Feed.route) {
-            BabFeed() // currently uses dummy data
+            BabFeed()
         }
         composable(NavigationItem.Login.route) {
             LoginScreen(navController) // currently uses dummy data
@@ -64,7 +65,7 @@ fun AppNavHost(
             SearchScreen()
         }
         composable(NavigationItem.Followers.route) {
-//            LoginScreen(navController)
+            FollowingScreen()
         }
         composable(NavigationItem.AddBab.route) {
             AddBabScreen() // currently uses dummy data for user card

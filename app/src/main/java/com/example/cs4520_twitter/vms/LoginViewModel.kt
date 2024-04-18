@@ -1,5 +1,6 @@
 package com.example.cs4520_twitter.vms
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope

@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -38,15 +39,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.example.cs4520_twitter.app_state.LoggedInUser
 import com.example.cs4520_twitter.data_layer.database.UserProfileEntity
 import com.example.cs4520_twitter.data_layer.database.dummyImageURL
 import com.example.cs4520_twitter.vms.FollowingScreenViewModel
 import com.example.cs4520_twitter.ui.theme.blue
+import com.example.cs4520_twitter.vms.AddBabViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
-fun FollowingScreen(profile: UserProfileEntity) {
-    val viewModel: FollowingScreenViewModel = viewModel() // TODO factory
+fun FollowingScreen() {
+    val viewModel : FollowingScreenViewModel = viewModel(factory = FollowingScreenViewModel.Factory)
+    viewModel.fetchData() // first fetching the logged in user
+
+    val following = viewModel.following.collectAsState()
+
+    val followingCount = viewModel.count.collectAsState()
+
+    val username = viewModel.username.collectAsState()
+
     val configuration = LocalConfiguration.current
     val maxHeight = configuration.screenHeightDp
 
@@ -60,7 +71,7 @@ fun FollowingScreen(profile: UserProfileEntity) {
                 ),
                 title = {
                     Column() {
-                        Text(profile.user.username,
+                        Text(username.value,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .testTag("profile_header"),
@@ -81,9 +92,9 @@ fun FollowingScreen(profile: UserProfileEntity) {
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {items(
-            count = profile.followingCount,
+            count = followingCount.value,
             itemContent = { index ->
-                val followedUser = profile.followingList[index]
+                val followedUser = following.value[index]
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -97,7 +108,9 @@ fun FollowingScreen(profile: UserProfileEntity) {
                     shape = RoundedCornerShape(corner = CornerSize(15.dp)),
                 ) {
                     ConstraintLayout(
-                        modifier = Modifier.fillMaxWidth().padding((maxHeight * 0.01).dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding((maxHeight * 0.01).dp),
                     ) {
                         val (image, name, btn) = createRefs()
                         GlideImage( // this is the icon image
