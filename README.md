@@ -18,18 +18,22 @@ API Link: https://github.com/tomgrbz/cs4520-backend-api
   ![img_1.png](photos/register_screen.png)
 
 - After logging in, you will be automatically navigated to the bab feed screen.
+
 ![img_1.png](photos/babble_feed.png)
 
 ### Bab Feed Screen
 -----------------------------------------
 - This feed screen should show a random number of babs from random users.
 - Bab posts have the user information, with the number of likes and date.
+
+
   ![img_1.png](photos/babble_feed.png)
 
 ### Navigation Bar
 -----------------------------------------
 - At the bottom of all screens beside login is the navigation bar.
 - Using this, you can navigate to the feed, add a bad, profile, and search screens.
+
   ![img_1.png](photos/nav_bar.png)
 
 ### Search Screen
@@ -61,6 +65,4 @@ API Link: https://github.com/tomgrbz/cs4520-backend-api
 - Enter the new text and then click on the save button. To return to the profile, click the 'return to profile' button.
 
 ![img_1.png](photos/edit_screen.png)
-
-
 
